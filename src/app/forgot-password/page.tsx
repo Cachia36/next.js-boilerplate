@@ -1,9 +1,16 @@
-import AuthCard from "@/components/AuthCard"
+"use client"
+
+import { ForgotPasswordCard } from "@/components/Auth/ForgotPasswordCard";
+import { useGuestOnly } from "@/hooks/useGuestOnly"
 
 export default function forgotPassword() {
+    const canRender = useGuestOnly("/");
+
+    if (!canRender) return null; // don't show anything until we know it's a guest
+
     return (
-        <div className="min-h-screen flex justify-center items-center p-4">
-            <AuthCard variant="forgotpassword"/>
+        <div className="flex-1 flex items-center justify-center p-4 animate-in fade-in slide-in-from-bottom-4 duration-300">
+            <ForgotPasswordCard />
         </div>
     )
 }

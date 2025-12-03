@@ -1,3 +1,4 @@
+import { AuthProvider } from "@/hooks/useAuth";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "@/app/globals.css";
@@ -59,10 +60,19 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: themeInitCode }}
         />
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <Navbar />
-        <main className="min-h-screen">{children}</main>
-        <Footer />
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}>
+        <AuthProvider>
+          <div className="min-h-screen flex flex-col">
+            <Navbar />
+
+            {/* Fills all space between navbar and footer */}
+            <main className="flex-1 flex flex-col">
+              {children}
+            </main>
+
+            <Footer />
+          </div>
+        </AuthProvider>
       </body>
     </html>
   );

@@ -1,9 +1,11 @@
-import AuthCard from "@/components/AuthCard"
+"use client"
 
-export default function RegisterPage() {
+import { RegisterCard } from "@/components/Auth/RegisterCard";
+
+export default function LoginPage() {
     return (
-        <div className="min-h-screen flex justify-center items-center p-4">
-            <AuthCard variant="register"/>
+        <div className="flex-1 flex items-center justify-center p-4 animate-in fade-in slide-in-from-bottom-4 duration-300">
+            <RegisterCard />
         </div>
-    )
+    );
 }

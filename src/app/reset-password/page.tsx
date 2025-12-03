@@ -1,15 +1,20 @@
-"use client"
+"use client";
 
-import { useSearchParams, useRouter } from "next/navigation"
-import AuthCard from "@/components/AuthCard"
+import { ResetPasswordCard } from "@/components/Auth/ResetPasswordCard";
+import { useSearchParams } from "next/navigation";
+import { useGuestOnly } from "@/hooks/useGuestOnly";
 
-export default function resetPassword() {
-    const searchParams = useSearchParams();
-    const token = searchParams.get("token");
+export default function ResetPasswordPage() {
+  const searchParams = useSearchParams();
+  const token = searchParams.get("token");
 
-    return (
-        <div className="min-h-screen flex justify-center items-center p-4">
-            <AuthCard variant="resetpassword" resetToken={token ?? undefined} />
-        </div>
-    )
+  const canRender = useGuestOnly("/");
+
+  if (!canRender) return null;
+
+  return (
+    <div className="flex-1 flex items-center justify-center p-4 animate-in fade-in slide-in-from-bottom-4 duration-300">
+      <ResetPasswordCard />
+    </div>
+  );
 }
