@@ -5,9 +5,6 @@ import { HttpError } from "@/lib/errors";
 export async function POST(req: Request) {
     try {
         const body = await req.json();
-        if (process.env.NODE_ENV !== "production") {
-            console.log("LOGIN BODY:", body);
-        }
         const { email, password } = body ?? {};
 
         if (!email || !password) {
