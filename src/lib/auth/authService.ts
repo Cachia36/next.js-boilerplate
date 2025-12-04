@@ -1,14 +1,13 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import type { UserRepository } from "./userRepository";
-import { memoryUserRepository } from "./userRepository.memory";
+
 import type { User } from "@/types/user";
+import { JWT_SECRET } from "../env";
+import { HttpError } from "../errors";
 
-const JWT_SECRET = process.env.JWT_SECRET || "dev-jwt-secret-change-me";
+import { repo } from "./currentRepo";
+
 const JWT_EXPIRES_IN = "7d";
-
-// Swap this later to Mongo/Postgres implementation
-const repo: UserRepository = memoryUserRepository;
 
 export type AuthTokenPayload = {
   sub: string;
@@ -30,7 +29,7 @@ export const authService = {
     const normalizedEmail = email.trim().toLowerCase();
 
     const existing = await repo.findByEmail(normalizedEmail);
-    
+
     if (existing) {
       const err = new Error("Email already in use");
       // @ts-expect-error attach status for route handler
@@ -65,7 +64,7 @@ export const authService = {
 
   async login(email: string, password: string): Promise<AuthResult> {
     const normalizedEmail = email.trim().toLowerCase();
-    
+
     const user = await repo.findByEmail(normalizedEmail);
     if (!user) {
       const err = new Error("Invalid credentials");
@@ -75,11 +74,8 @@ export const authService = {
     }
 
     const isMatch = await bcrypt.compare(password, user.passwordHash);
-    if (!isMatch) {
-      const err = new Error("Invalid credentials");
-      // @ts-expect-error
-      err.statusCode = 401;
-      throw err;
+    if (!isMatch){
+      throw new HttpError(401, "Invalid credentials");
     }
 
     const token = signToken({
@@ -105,10 +101,12 @@ export const authService = {
     try {
       await repo.updatePassword(userId, passwordHash);
     } catch (err: any) {
-      if(!err.statusCode){
-        err.statusCode = 500;
+      if (err instanceof HttpError){
+        throw err;
       }
-      throw err;
+
+      // anything else becomes a generic 500
+      throw new HttpError(500, "Failed to update password");
     }
   }
 };

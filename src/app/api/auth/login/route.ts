@@ -1,11 +1,14 @@
 import { NextResponse } from "next/server";
 import { authService } from "@/lib/auth/authService";
+import { HttpError } from "@/lib/errors";
 
 export async function POST(req: Request) {
     try {
         const body = await req.json();
-        console.log("LOGIN BODY:", body);
-        const {email, password} = body ?? {};
+        if (process.env.NODE_ENV !== "production") {
+            console.log("LOGIN BODY:", body);
+        }
+        const { email, password } = body ?? {};
 
         if (!email || !password) {
             return NextResponse.json(
@@ -23,12 +26,9 @@ export async function POST(req: Request) {
             { status: 200 }
         );
     } catch (error: any) {
-        const status = error?.statusCode ?? 401;
+        const status = error instanceof HttpError ? error.statusCode : 401;
         const message = error?.message ?? "Invalid credentials";
 
-        return NextResponse.json(
-            { message },
-            { status, }
-        );
+        return NextResponse.json({ message }, { status });
     }
 }

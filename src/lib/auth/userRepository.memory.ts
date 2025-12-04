@@ -1,7 +1,7 @@
 import { DbUser } from "@/types/user";
 import { UserRepository, CreateUserInput } from "./userRepository";
 import crypto from "crypto"
-import { error } from "console";
+import { HttpError } from "../errors";
 
 let users: DbUser[] = [];
 
@@ -27,13 +27,16 @@ export const memoryUserRepository: UserRepository = {
         const user = users.find((u) => u.id === userId);
 
         if (!user) {
-            const err = new Error("User does not exist");
-            // @ts-expect-error attach status for route handler if you want
-            err.statusCode = 404;
-            throw err;
+            throw new HttpError(404, "User does not exist");
         }
 
         user.passwordHash = passwordHash;
     }
 
+};
+
+export const __memoryUserRepoTestUtils = {
+    reset() {
+        users = [];
+    },
 };

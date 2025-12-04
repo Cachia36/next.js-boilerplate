@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
 import { authService } from "@/lib/auth/authService";
 import jwt from "jsonwebtoken";
-
-const JWT_SECRET = process.env.JWT_SECRET || "dev-jwt-secret-change-me";
+import { JWT_SECRET } from "@/lib/env";
+import { passwordSchema } from "@/lib/validation/authSchemas";
+import { ZodError } from "zod";
+import { HttpError } from "@/lib/errors";
 
 export async function POST(req: Request) {
   try {
@@ -16,8 +18,18 @@ export async function POST(req: Request) {
       );
     }
 
+    try {
+      passwordSchema.parse(password);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const message = error.issues[0]?.message ?? "Invalid password";
+        return NextResponse.json({ message }, { status: 400 });
+      }
+      throw error;
+    }
+
     let payload: any;
-    try{
+    try {
       payload = jwt.verify(token, JWT_SECRET);
     } catch {
       return NextResponse.json(
@@ -27,7 +39,7 @@ export async function POST(req: Request) {
     }
 
     const userId = payload.sub as string | undefined;
-    if(!userId){
+    if (!userId) {
       return NextResponse.json(
         { message: "Invalid token payload" },
         { status: 400 }
@@ -40,8 +52,8 @@ export async function POST(req: Request) {
       { message: "Password updated successfully" },
       { status: 200 }
     );
-  } catch (error: any ){
-    const status = error?.statusCode ?? 500;
+  } catch (error: any) {
+    const status = error instanceof HttpError ? error.statusCode : 500;
     const message = error?.message ?? "Failed to reset password";
     return NextResponse.json({ message }, { status });
   }

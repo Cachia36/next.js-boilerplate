@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
-import { memoryUserRepository as repo } from "@/lib/auth/userRepository.memory"; // or use your interface
+import { repo } from "@/lib/auth/currentRepo";
 import { sendPasswordResetEmail } from "@/lib/email/emailService";
-
-const JWT_SECRET = process.env.JWT_SECRET || "dev-jwt-secret-change-me";
+import { JWT_SECRET, APP_URL } from "@/lib/env";
 
 export async function POST(req: Request) {
     try {
@@ -18,13 +17,8 @@ export async function POST(req: Request) {
         }
 
         const normalizedEmail = email.trim().toLowerCase();
-        console.log("Incoming forgot password request:", normalizedEmail);
         const user = await repo.findByEmail(normalizedEmail);
-        console.log("User found:", !!user);
 
-        if (user) {
-            console.log("Creating reset token for user:", user.id);
-        }
         if (!user) {
             return NextResponse.json(
                 { message: "If that email exists, a reset link has been sent" },
@@ -39,19 +33,18 @@ export async function POST(req: Request) {
                 type: "password-reset",
             },
             JWT_SECRET,
-            { expiresIn: "15m" } 
+            { expiresIn: "15m" }
         );
 
-        const resetLink = `${process.env.NEXT_PUBLIC_APP_URL}/reset-password?token=${resetToken}`;
+        const resetLink = `${APP_URL}/reset-password?token=${resetToken}`;
         await sendPasswordResetEmail(normalizedEmail, resetLink);
 
-        return NextResponse.json(
-            {
-                message: "Reset link created",
-                resetToken,
-            },
-            { status: 200 }
-        );
+        const responseBody: any = { message: "Reset link created" };
+        if (process.env.NODE_ENV !== "production") {
+            responseBody.resetToken = resetToken;
+        }
+        return NextResponse.json(responseBody, { status: 200 });
+
     } catch (error: any) {
         const message = error?.message ?? "Failed to send reset email";
         return NextResponse.json({ message }, { status: 500 });

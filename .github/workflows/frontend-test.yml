@@ -1,0 +1,27 @@
+name: Frontend Tests
+
+# When should this run?
+on:
+  push:            # any push to any branch
+  pull_request:    # and on PRs too
+
+jobs:
+  test-frontend:
+    runs-on: ubuntu-latest   # GitHub gives you a fresh Linux VM
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        working-directory: ./frontend-boilerplate
+        run: npm install
+
+      - name: Run tests
+        working-directory: ./frontend-boilerplate
+        run: npm test
