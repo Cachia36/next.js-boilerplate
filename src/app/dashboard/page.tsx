@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import { authService } from "@/lib/auth/authService";
+import type { User } from "@/types/user";
 
 export default async function DashboardPage() {
   const cookieStore = await cookies();
@@ -16,7 +17,7 @@ export default async function DashboardPage() {
     );
   }
 
-  let user: any = null;
+  let user: User | null = null;
   try {
     user = await authService.getUserFromAccessToken(accessToken);
   } catch (error) {
