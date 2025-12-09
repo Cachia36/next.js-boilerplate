@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Loader2, UserPlus } from "lucide-react";
@@ -34,7 +34,7 @@ export function RegisterCard() {
 
   const clearFormMessage = () => setFormMessage(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isSubmitting) return;
 
@@ -60,8 +60,10 @@ export function RegisterCard() {
       await registerRequest(email, password);
 
       router.push("/");
-    } catch (err: any) {
-      setFormMessage(err?.message ?? "Failed to create your account. Please try again.");
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error ? err.message : "Failed to create your account. Please try again.";
+      setFormMessage(message);
     } finally {
       setIsSubmitting(false);
     }

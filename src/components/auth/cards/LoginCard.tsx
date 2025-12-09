@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { LogIn, Loader2 } from "lucide-react";
@@ -17,6 +17,8 @@ type FieldErrors = {
   password?: string;
 };
 
+type ApiError = Error & { statusCode?: number };
+
 export function LoginCard() {
   const router = useRouter();
 
@@ -31,7 +33,7 @@ export function LoginCard() {
 
   const clearFormMessage = () => setFormMessage(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isSubmitting) return;
 
@@ -52,11 +54,12 @@ export function LoginCard() {
       await loginRequest(email, password);
 
       router.push("/");
-    } catch (err: any) {
-      if (err.statusCode === 429) {
+    } catch (err: unknown) {
+      const error = err as ApiError;
+      if (error.statusCode === 429) {
         setFormMessage("Too many attempts. Please wait a minute and try again.");
       } else {
-        setFormMessage(err?.message ?? "Failed to sign in");
+        setFormMessage(error.message ?? "Failed to sign in");
       }
     } finally {
       setIsSubmitting(false);

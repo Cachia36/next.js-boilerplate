@@ -3,7 +3,6 @@ import crypto from "crypto";
 
 import { memoryUserRepository, __memoryUserRepoTestUtils } from "./userRepository.memory";
 import type { DbUser } from "@/types/user";
-import { HttpError } from "../errors";
 
 describe("memoryUserRepository", () => {
   const randomUUIDSpy = vi.spyOn(crypto, "randomUUID");

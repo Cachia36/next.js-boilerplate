@@ -7,7 +7,7 @@ const globalForUsers = globalThis as unknown as {
   __memoryUsers?: DbUser[];
 };
 
-let users: DbUser[] = globalForUsers.__memoryUsers ?? [];
+const users: DbUser[] = globalForUsers.__memoryUsers ?? [];
 if (!globalForUsers.__memoryUsers) {
   globalForUsers.__memoryUsers = users;
 }

@@ -23,7 +23,6 @@ const parsed = envSchema.safeParse({
 
 if (!parsed.success) {
   // Fail fast in production
-  // eslint-disable-next-line no-console
   console.error("Invalid environment variables", parsed.error.flatten());
   throw new Error("Invalid environment variables");
 }

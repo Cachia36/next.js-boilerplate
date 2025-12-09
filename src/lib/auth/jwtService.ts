@@ -1,6 +1,6 @@
 // src/lib/auth/jwtService.ts
 import jwt from "jsonwebtoken";
-import type { User, UserRole } from "@/types/user";
+import type { User } from "@/types/user";
 import { JWT_SECRET, JWT_REFRESH_SECRET } from "../env";
 import { HttpError } from "../errors";
 import { AuthTokenPayload } from "@/types/auth";

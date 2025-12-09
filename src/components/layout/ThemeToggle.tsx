@@ -10,6 +10,8 @@ export function ThemeToggle({ isDark, onToggle }: ThemeToggleProps) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    // We intentionally set mounted here to avoid a hydration mismatch.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
 

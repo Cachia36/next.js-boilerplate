@@ -1,19 +1,20 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/hooks/useTheme";
 import { getCurrentUser, logoutRequest } from "@/lib/auth/authClient";
-import { AuthActions } from "../auth/AuthActions";
-import { ThemeToggle } from "./ThemeToggle";
+import { ThemeToggle } from "../ThemeToggle";
+import { NAV_LINKS } from "./NavLinks";
+import { MobileMenu } from "./MobileMenu";
+import { DesktopNavbar } from "./DesktopNavbar";
 
 export default function Navbar() {
   const { toggleTheme, effectiveTheme } = useTheme();
   const isDark = effectiveTheme === "dark";
-  const [isOpen, setIsOpen] = useState(false);
 
+  const [isOpen, setIsOpen] = useState(false);
   const [authLoading, setAuthLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -21,16 +22,9 @@ export default function Navbar() {
   const router = useRouter();
   const pathname = usePathname();
 
-  const navLinks = [
-    { href: "/", label: "Home" },
-    { href: "/about", label: "About" },
-    { href: "#services", label: "Services" },
-    { href: "#contact", label: "Contact" },
-  ];
-
   const closeMenu = () => setIsOpen(false);
 
-  //Check auth + role on mount & route change
+  // Check auth + role on mount & route change
   useEffect(() => {
     let cancelled = false;
 
@@ -128,80 +122,26 @@ export default function Navbar() {
       </div>
 
       {/* MOBILE MENU */}
-      <div
-        className={cn(
-          "fixed inset-0 z-40 transition-[opacity,visibility] duration-300 md:hidden",
-          isOpen
-            ? "pointer-events-auto visible opacity-100"
-            : "pointer-events-none invisible opacity-0",
-        )}
-      >
-        <div className="absolute inset-0 bg-black/40" onClick={closeMenu} />
-
-        <div
-          className={cn(
-            "bg-background absolute top-0 left-0 h-full w-3/4 max-w-xs transform border-r shadow-lg transition-transform duration-300 ease-out",
-            isOpen ? "translate-x-0" : "-translate-x-full",
-          )}
-          onClick={(e) => e.stopPropagation()}
-        >
-          <div className="mt-6 flex flex-col items-center gap-6 px-4">
-            <div className="flex gap-4">
-              <AuthActions
-                loading={authLoading}
-                isLoggedIn={isLoggedIn}
-                isAdmin={isAdmin}
-                onLinkClick={closeMenu}
-                onLogout={() => {
-                  closeMenu();
-                  handleLogout();
-                }}
-              />
-            </div>
-
-            <nav className="flex flex-col items-center gap-4 text-lg font-medium">
-              {navLinks.map((link) => (
-                <Link
-                  key={`${link.href}-${link.label}`}
-                  href={link.href}
-                  onClick={closeMenu}
-                  className="hover:underline"
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </nav>
-          </div>
-        </div>
-      </div>
+      <MobileMenu
+        isOpen={isOpen}
+        navLinks={NAV_LINKS}
+        authLoading={authLoading}
+        isLoggedIn={isLoggedIn}
+        isAdmin={isAdmin}
+        onClose={closeMenu}
+        onLogout={handleLogout}
+      />
 
       {/* DESKTOP */}
-      <div className="hidden items-center justify-between md:flex">
-        <div className="flex items-center text-lg font-semibold">Logo</div>
-
-        <div className="flex gap-8 text-sm font-medium">
-          {navLinks.map((link) => (
-            <Link
-              key={`${link.href}-${link.label}`}
-              href={link.href}
-              className="after:bg-foreground relative text-sm font-medium after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:w-0 after:transition-all after:duration-300 hover:after:w-full"
-            >
-              {link.label}
-            </Link>
-          ))}
-        </div>
-
-        <div className="flex items-center gap-2">
-          <ThemeToggle isDark={isDark} onToggle={toggleTheme} />
-
-          <AuthActions
-            loading={authLoading}
-            isLoggedIn={isLoggedIn}
-            isAdmin={isAdmin}
-            onLogout={handleLogout}
-          />
-        </div>
-      </div>
+      <DesktopNavbar
+        navLinks={NAV_LINKS}
+        isDark={isDark}
+        toggleTheme={toggleTheme}
+        authLoading={authLoading}
+        isLoggedIn={isLoggedIn}
+        isAdmin={isAdmin}
+        onLogout={handleLogout}
+      />
     </nav>
   );
 }

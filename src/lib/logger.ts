@@ -13,7 +13,6 @@ function baseLog(level: "info" | "error" | "warn", message: string, context?: Lo
   };
 
   // Simple JSON logging – easy to plug into Logtail, Datadog, etc.
-  // eslint-disable-next-line no-console
   console.log(JSON.stringify(payload));
 }
 

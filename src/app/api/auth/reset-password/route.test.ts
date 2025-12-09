@@ -80,7 +80,6 @@ import { authService } from "@/lib/auth/authService";
 import { repo } from "@/lib/auth/currentRepo";
 import { passwordSchema } from "@/lib/validation/authSchemas";
 import { logAuthEvent } from "@/lib/logger";
-import { HttpError } from "@/lib/errors";
 
 const mockResetPassword = (authService as any).resetPassword as ReturnType<typeof vi.fn>;
 const mockFindByPasswordResetToken = repo.findByPasswordResetToken as unknown as ReturnType<

@@ -1,7 +1,7 @@
 // src/components/auth/ResetPasswordCard.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Loader2, KeyRound, CheckCircle2 } from "lucide-react";
@@ -38,7 +38,7 @@ export function ResetPasswordCard() {
 
   const clearFormMessage = () => setFormMessage(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isSubmitting || isResetSuccess) return;
 
@@ -72,8 +72,9 @@ export function ResetPasswordCard() {
       setTimeout(() => {
         router.push("/login");
       }, 1500);
-    } catch (err: any) {
-      setFormMessage(err?.message ?? "Failed to reset password");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to reset password";
+      setFormMessage(message);
     } finally {
       setIsSubmitting(false);
     }

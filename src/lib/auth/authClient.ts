@@ -1,4 +1,5 @@
 import type { AuthResult } from "./authService";
+import type { User } from "@/types/user";
 
 type ApiError = Error & { statusCode?: number };
 
@@ -15,7 +16,7 @@ async function handleResponse<T>(res: Response, fallbackMessage: string): Promis
   return data as T;
 }
 
-export async function getCurrentUser(): Promise<{ user: any | null }> {
+export async function getCurrentUser(): Promise<{ user: User | null }> {
   const res = await fetch("/api/auth/me", {
     method: "GET",
     credentials: "include",
@@ -25,7 +26,8 @@ export async function getCurrentUser(): Promise<{ user: any | null }> {
     throw new Error("Failed to fetch current user");
   }
 
-  return res.json();
+  const data = (await res.json()) as { user: User | null };
+  return data;
 }
 
 export async function loginRequest(email: string, password: string): Promise<AuthResult> {

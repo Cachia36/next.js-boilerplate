@@ -13,6 +13,8 @@ export type AuthResult = {
 };
 
 function toPublicUser(dbUser: DbUser): User {
+  // We intentionally strip sensitive fields from the user object.
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { passwordHash, passwordResetToken, passwordResetExpiresAt, ...rest } = dbUser;
   return rest;
 }
@@ -88,11 +90,12 @@ export const authService = {
       await repo.clearPasswordResetToken(userId);
 
       logAuthEvent("password_reset_success", { userId });
-    } catch (err: any) {
+    } catch (err: unknown) {
       if (err instanceof HttpError) {
         throw err;
       }
 
+      logAuthEvent("password_reset_failed", { userId });
       throw new HttpError(500, "Failed to update password", "PASSWORD_RESET_FAILED");
     }
   },

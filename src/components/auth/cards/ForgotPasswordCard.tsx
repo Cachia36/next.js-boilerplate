@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { Loader2, KeyRound, MailCheck } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
@@ -24,7 +24,7 @@ export function ForgotPasswordCard() {
 
   const clearFormMessage = () => setFormMessage(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isSubmitting) return;
 
@@ -44,8 +44,9 @@ export function ForgotPasswordCard() {
       await forgotPasswordRequest(email);
 
       setHasSentResetEmail(true);
-    } catch (err: any) {
-      setFormMessage(err?.message ?? "Failed to send reset email");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to send reset email";
+      setFormMessage(message);
     } finally {
       setIsSubmitting(false);
     }
