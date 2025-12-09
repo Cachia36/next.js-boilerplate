@@ -23,9 +23,9 @@ export default function Navbar() {
 
   const navLinks = [
     { href: "/", label: "Home" },
-    { href: "/", label: "About Us" },
-    { href: "/", label: "Services" },
-    { href: "/", label: "Contact" },
+    { href: "/about", label: "About" },
+    { href: "#services", label: "Services" },
+    { href: "#contact", label: "Contact" },
   ];
 
   const closeMenu = () => setIsOpen(false);
