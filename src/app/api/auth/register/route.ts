@@ -11,11 +11,7 @@ export async function POST(req: Request) {
     const { email, password } = body ?? {};
 
     if (!email || !password) {
-      const apiError = createApiError(
-        400,
-        "Email and password are required",
-        "VALIDATION_ERROR"
-      );
+      const apiError = createApiError(400, "Email and password are required", "VALIDATION_ERROR");
       return NextResponse.json(apiError, { status: apiError.status });
     }
 
@@ -28,7 +24,7 @@ export async function POST(req: Request) {
       {
         user: result.user,
       },
-      { status: 201 }
+      { status: 201 },
     );
 
     const isProd = process.env.NODE_ENV === "production";
@@ -49,15 +45,10 @@ export async function POST(req: Request) {
       sameSite: "lax",
     });
 
-
     return res;
   } catch (error: any) {
     if (error instanceof ZodError) {
-      const apiError = createApiError(
-        400,
-        "Invalid email or password",
-        "VALIDATION_ERROR"
-      );
+      const apiError = createApiError(400, "Invalid email or password", "VALIDATION_ERROR");
       return NextResponse.json(apiError, { status: apiError.status });
     }
 
@@ -77,7 +68,7 @@ export async function POST(req: Request) {
     const apiError = createApiError(
       500,
       "Unable to register with the provided details",
-      "REGISTER_FAILED"
+      "REGISTER_FAILED",
     );
     return NextResponse.json(apiError, { status: apiError.status });
   }

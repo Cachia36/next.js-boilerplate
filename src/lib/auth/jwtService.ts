@@ -42,10 +42,6 @@ export function verifyRefreshToken(token: string): AuthTokenPayload {
   try {
     return jwt.verify(token, JWT_REFRESH_SECRET) as AuthTokenPayload;
   } catch {
-    throw new HttpError(
-      401,
-      "Invalid or expired refresh token",
-      "REFRESH_TOKEN_INVALID"
-    );
+    throw new HttpError(401, "Invalid or expired refresh token", "REFRESH_TOKEN_INVALID");
   }
 }

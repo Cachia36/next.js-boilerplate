@@ -2,11 +2,7 @@ import type { User, DbUser } from "@/types/user";
 import { HttpError } from "../errors";
 import { repo } from "./currentRepo";
 import { hashPassword, verifyPassword } from "./passwordService";
-import {
-  generateAccessToken,
-  generateRefreshToken,
-  verifyAccessToken,
-} from "./jwtService";
+import { generateAccessToken, generateRefreshToken, verifyAccessToken } from "./jwtService";
 import type { AuthTokenPayload } from "@/types/auth";
 import { logAuthEvent } from "../logger";
 
@@ -17,8 +13,7 @@ export type AuthResult = {
 };
 
 function toPublicUser(dbUser: DbUser): User {
-  const { passwordHash, passwordResetToken, passwordResetExpiresAt, ...rest } =
-    dbUser;
+  const { passwordHash, passwordResetToken, passwordResetExpiresAt, ...rest } = dbUser;
   return rest;
 }
 
@@ -28,11 +23,7 @@ export const authService = {
 
     const existing = await repo.findByEmail(normalizedEmail);
     if (existing) {
-      throw new HttpError(
-        409,
-        "Email already in use",
-        "AUTH_EMAIL_ALREADY_EXISTS"
-      );
+      throw new HttpError(409, "Email already in use", "AUTH_EMAIL_ALREADY_EXISTS");
     }
 
     const passwordHash = await hashPassword(password);
@@ -102,11 +93,7 @@ export const authService = {
         throw err;
       }
 
-      throw new HttpError(
-        500,
-        "Failed to update password",
-        "PASSWORD_RESET_FAILED"
-      );
+      throw new HttpError(500, "Failed to update password", "PASSWORD_RESET_FAILED");
     }
   },
 };

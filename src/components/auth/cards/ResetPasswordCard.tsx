@@ -7,10 +7,7 @@ import Link from "next/link";
 import { Loader2, KeyRound, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
-import {
-  validatePassword,
-  validateConfirmPassword,
-} from "@/lib/validation/auth";
+import { validatePassword, validateConfirmPassword } from "@/lib/validation/auth";
 import { cn } from "@/lib/utils";
 import { PasswordField } from "../fields/PasswordField";
 import { resetPasswordRequest } from "@/lib/auth/authClient";
@@ -85,31 +82,27 @@ export function ResetPasswordCard() {
   return (
     <div
       className={cn(
-        "w-full max-w-sm rounded-3xl border overflow-hidden shadow-xl",
+        "w-full max-w-sm overflow-hidden rounded-3xl border shadow-xl",
         "transition-all duration-300 ease-out",
-        "hover:-translate-y-[2px] hover:shadow-2xl hover:border-foreground/50"
+        "hover:border-foreground/50 hover:-translate-y-[2px] hover:shadow-2xl",
       )}
     >
       {/* Header */}
-      <div className="pt-8 pb-4 flex flex-col items-center">
+      <div className="flex flex-col items-center pt-8 pb-4">
         <div
           className={cn(
-            "w-12 h-12 rounded-2xl flex items-center justify-center text-xl shadow-xl transition-all duration-300 ease-out",
-            isResetSuccess ? "bg-emerald-500/15 text-emerald-500" : "bg-foreground/15"
+            "flex h-12 w-12 items-center justify-center rounded-2xl text-xl shadow-xl transition-all duration-300 ease-out",
+            isResetSuccess ? "bg-emerald-500/15 text-emerald-500" : "bg-foreground/15",
           )}
         >
-          {isResetSuccess ? (
-            <CheckCircle2 className="w-5 h-5" />
-          ) : (
-            <KeyRound className="w-5 h-5" />
-          )}
+          {isResetSuccess ? <CheckCircle2 className="h-5 w-5" /> : <KeyRound className="h-5 w-5" />}
         </div>
 
         <h2 className="mt-4 text-lg font-semibold">
           {isResetSuccess ? "Success!" : "Reset password"}
         </h2>
 
-        <p className="mt-1 text-xs text-center px-10 text-foreground/80">
+        <p className="text-foreground/80 mt-1 px-10 text-center text-xs">
           {isResetSuccess
             ? "Redirecting to login"
             : "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sit"}
@@ -117,17 +110,9 @@ export function ResetPasswordCard() {
       </div>
 
       {/* Form */}
-      <form
-        onSubmit={handleSubmit}
-        className="px-6 pb-6 pt-2 space-y-4"
-        noValidate
-      >
+      <form onSubmit={handleSubmit} className="space-y-4 px-6 pt-2 pb-6" noValidate>
         <div className="space-y-3">
-          {formMessage && (
-            <p className="text-xs text-red-500 px-1 text-center">
-              {formMessage}
-            </p>
-          )}
+          {formMessage && <p className="px-1 text-center text-xs text-red-500">{formMessage}</p>}
 
           <PasswordField
             value={password}
@@ -193,15 +178,15 @@ export function ResetPasswordCard() {
             type="submit"
             disabled={isSubmitting || isResetSuccess}
             className={cn(
-              "w-full py-2.5 font-semibold transition flex items-center justify-center gap-2",
+              "flex w-full items-center justify-center gap-2 py-2.5 font-semibold transition",
               "hover:bg-foreground/80",
               (isSubmitting || isResetSuccess) &&
-                "opacity-70 cursor-not-allowed hover:bg-foreground"
+                "hover:bg-foreground cursor-not-allowed opacity-70",
             )}
           >
             {isSubmitting || isResetSuccess ? (
               <>
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <Loader2 className="h-4 w-4 animate-spin" />
                 <span>{isResetSuccess ? "Redirecting..." : "Resetting..."}</span>
               </>
             ) : (
@@ -210,17 +195,15 @@ export function ResetPasswordCard() {
           </Button>
 
           <div className="flex items-center gap-3 pt-2">
-            <span className="h-px flex-1 bg-foreground" />
-            <span className="text-[10px] uppercase tracking-[0.18em] text-foreground">
-              ...
-            </span>
-            <span className="h-px flex-1 bg-foreground" />
+            <span className="bg-foreground h-px flex-1" />
+            <span className="text-foreground text-[10px] tracking-[0.18em] uppercase">...</span>
+            <span className="bg-foreground h-px flex-1" />
           </div>
 
-          <div className="text-[10px] text-center">
+          <div className="text-center text-[10px]">
             <Link
               href="/login"
-              className="text-xs font-medium text-foreground/60 hover:text-foreground/90"
+              className="text-foreground/60 hover:text-foreground/90 text-xs font-medium"
             >
               Return to login
             </Link>

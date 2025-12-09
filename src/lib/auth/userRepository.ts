@@ -13,11 +13,7 @@ export interface UserRepository {
   updatePassword(userId: string, passwordHash: string): Promise<void>;
 
   // Password reset token storage
-  setPasswordResetToken(
-    userId: string,
-    token: string,
-    expiresAt: Date
-  ): Promise<void>;
+  setPasswordResetToken(userId: string, token: string, expiresAt: Date): Promise<void>;
   findByPasswordResetToken(token: string): Promise<DbUser | null>;
   clearPasswordResetToken(userId: string): Promise<void>;
 }

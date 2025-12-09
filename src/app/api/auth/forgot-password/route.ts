@@ -10,10 +10,7 @@ import { emailSchema } from "@/lib/validation/authSchemas";
 import { ZodError } from "zod";
 
 export async function POST(req: Request) {
-  const ip =
-    req.headers.get("x-forwarded-for") ??
-    req.headers.get("x-real-ip") ??
-    "unknown";
+  const ip = req.headers.get("x-forwarded-for") ?? req.headers.get("x-real-ip") ?? "unknown";
 
   const rate = checkRateLimit(`forgot-password:${ip}`, {
     max: 5,
@@ -24,7 +21,7 @@ export async function POST(req: Request) {
     const apiError = createApiError(
       429,
       "Too many reset attempts. Please try again later.",
-      "RATE_LIMIT_EXCEEDED"
+      "RATE_LIMIT_EXCEEDED",
     );
     return NextResponse.json(apiError, {
       status: apiError.status,
@@ -50,7 +47,7 @@ export async function POST(req: Request) {
       });
       return NextResponse.json(
         { message: "If that email exists, a reset link has been sent." },
-        { status: 200 }
+        { status: 200 },
       );
     }
 
@@ -78,7 +75,7 @@ export async function POST(req: Request) {
       const apiError = createApiError(
         400,
         "Please enter a valid email address",
-        "VALIDATION_ERROR"
+        "VALIDATION_ERROR",
       );
       return NextResponse.json(apiError, { status: apiError.status });
     }
@@ -87,11 +84,7 @@ export async function POST(req: Request) {
       error: error?.message ?? "Unknown error",
     });
 
-    const apiError = createApiError(
-      500,
-      "Failed to send reset email",
-      "RESET_EMAIL_FAILED"
-    );
+    const apiError = createApiError(500, "Failed to send reset email", "RESET_EMAIL_FAILED");
     return NextResponse.json(apiError, { status: apiError.status });
   }
 }

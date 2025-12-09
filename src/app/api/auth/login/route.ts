@@ -7,10 +7,7 @@ import { emailSchema, passwordSchema } from "@/lib/validation/authSchemas";
 import { ZodError } from "zod";
 
 export async function POST(req: Request) {
-  const ip =
-    req.headers.get("x-forwarded-for") ??
-    req.headers.get("x-real-ip") ??
-    "unknown";
+  const ip = req.headers.get("x-forwarded-for") ?? req.headers.get("x-real-ip") ?? "unknown";
 
   const rate = checkRateLimit(`login:${ip}`, { max: 10, windowMs: 60_000 });
 
@@ -18,7 +15,7 @@ export async function POST(req: Request) {
     const apiError = createApiError(
       429,
       "Too many login attempts. Please try again later.",
-      "RATE_LIMIT_EXCEEDED"
+      "RATE_LIMIT_EXCEEDED",
     );
     return NextResponse.json(apiError, {
       status: apiError.status,
@@ -42,7 +39,7 @@ export async function POST(req: Request) {
       {
         user: result.user,
       },
-      { status: 200 }
+      { status: 200 },
     );
 
     const isProd = process.env.NODE_ENV === "production";
@@ -66,26 +63,18 @@ export async function POST(req: Request) {
 
     return res;
   } catch (error: any) {
-    if(error instanceof ZodError){
-      const apiError = createApiError(
-        400,
-        "Invalid email or password",
-        "VALIDATION_ERROR"
-      );
+    if (error instanceof ZodError) {
+      const apiError = createApiError(400, "Invalid email or password", "VALIDATION_ERROR");
       return NextResponse.json(apiError, { status: apiError.status });
     }
-    
+
     if (error instanceof HttpError) {
       logAuthEvent("login_http_error", {
         statusCode: error.statusCode,
         code: error.code,
       });
-      const apiError = createApiError(
-        error.statusCode,
-        error.message,
-        error.code
-      );
-      return NextResponse.json(apiError, {status: apiError.status });
+      const apiError = createApiError(error.statusCode, error.message, error.code);
+      return NextResponse.json(apiError, { status: apiError.status });
     }
 
     logAuthEvent("login_unexpected_error", {

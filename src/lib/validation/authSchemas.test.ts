@@ -19,9 +19,7 @@ describe("emailSchema", () => {
     const result = emailSchema.safeParse("not-an-email");
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.issues[0]?.message).toBe(
-        "Please enter a valid email address"
-      );
+      expect(result.error.issues[0]?.message).toBe("Please enter a valid email address");
     }
   });
 });
@@ -36,9 +34,7 @@ describe("passwordSchema", () => {
     const result = passwordSchema.safeParse("Pa1");
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.issues[0]?.message).toBe(
-        "Password must be at least 8 characters"
-      );
+      expect(result.error.issues[0]?.message).toBe("Password must be at least 8 characters");
     }
   });
 
@@ -47,7 +43,7 @@ describe("passwordSchema", () => {
     expect(result.success).toBe(false);
     if (!result.success) {
       expect(result.error.issues[0]?.message).toBe(
-        "Password must contain at least one capital letter"
+        "Password must contain at least one capital letter",
       );
     }
   });
@@ -56,9 +52,7 @@ describe("passwordSchema", () => {
     const result = passwordSchema.safeParse("Password");
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.issues[0]?.message).toBe(
-        "Password must contain at least one number"
-      );
+      expect(result.error.issues[0]?.message).toBe("Password must contain at least one number");
     }
   });
 });

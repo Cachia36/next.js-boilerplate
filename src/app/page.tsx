@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { error } from "console";
 import { useState } from "react";
@@ -14,10 +14,7 @@ export default function HomePage() {
 
   return (
     <main className="flex flex-1 flex-col p-4">
-      <div className="p-6 text-3xl font-semibold">
-        Boilerplate Ready 
-      </div>
-      
+      <div className="p-6 text-3xl font-semibold">Boilerplate Ready</div>
     </main>
   );
 }

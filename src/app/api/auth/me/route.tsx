@@ -23,10 +23,7 @@ export async function GET(req: Request) {
     return NextResponse.json({ user }, { status: 200 });
   } catch (error: any) {
     // Token invalid or user missing → treat as logged out
-    if (
-      error instanceof HttpError &&
-      (error.statusCode === 401 || error.statusCode === 404)
-    ) {
+    if (error instanceof HttpError && (error.statusCode === 401 || error.statusCode === 404)) {
       logAuthEvent("me_token_invalid_or_user_missing", {
         statusCode: error.statusCode,
         code: error.code,
@@ -40,11 +37,7 @@ export async function GET(req: Request) {
       error: error?.message ?? "Unknown error",
     });
 
-    const apiError = createApiError(
-      500,
-      "Failed to fetch current user",
-      "ME_UNEXPECTED_ERROR"
-    );
+    const apiError = createApiError(500, "Failed to fetch current user", "ME_UNEXPECTED_ERROR");
 
     return NextResponse.json(apiError, { status: apiError.status });
   }

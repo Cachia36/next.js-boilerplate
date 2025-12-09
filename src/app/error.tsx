@@ -16,26 +16,23 @@ export default function GlobalError({ error, reset }: ErrorPageProps) {
   }, [error]);
 
   return (
-    <main className="flex-1 flex flex-col items-center justify-center px-4">
-      <h1 className="text-3xl font-bold mb-2">Something went wrong</h1>
-      <p className="text-muted-foreground mb-4 text-center max-w-md">
+    <main className="flex flex-1 flex-col items-center justify-center px-4">
+      <h1 className="mb-2 text-3xl font-bold">Something went wrong</h1>
+      <p className="text-muted-foreground mb-4 max-w-md text-center">
         An unexpected error occurred. You can try again or go back to the home page.
       </p>
 
       <div className="flex gap-3">
-        <Button
-          onClick={() => reset()}
-          variant="outline"
-        >
+        <Button onClick={() => reset()} variant="outline">
           Try again
         </Button>
 
-        <Link href="/"
-          className="px-4 py-2 text-sm rounded-full transition bg-foreground text-background border hover:cursor-default"
+        <Link
+          href="/"
+          className="bg-foreground text-background rounded-full border px-4 py-2 text-sm transition hover:cursor-default"
         >
           Go home
         </Link>
-
       </div>
     </main>
   );

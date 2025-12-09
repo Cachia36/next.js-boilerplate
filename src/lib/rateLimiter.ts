@@ -1,7 +1,4 @@
-const store = new Map<
-  string,
-  { count: number; firstRequestAt: number }
->();
+const store = new Map<string, { count: number; firstRequestAt: number }>();
 
 type RateLimitResult = {
   allowed: boolean;
@@ -10,10 +7,7 @@ type RateLimitResult = {
 
 export function checkRateLimit(
   key: string,
-  {
-    max = 10,
-    windowMs = 60_000,
-  }: { max?: number; windowMs?: number } = {}
+  { max = 10, windowMs = 60_000 }: { max?: number; windowMs?: number } = {},
 ): RateLimitResult {
   const now = Date.now();
   const existing = store.get(key);

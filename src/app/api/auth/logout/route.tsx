@@ -4,10 +4,7 @@ import { logAuthEvent } from "@/lib/logger";
 
 export async function POST() {
   try {
-    const res = NextResponse.json(
-      { message: "Logged out successfully" },
-      { status: 200 }
-    );
+    const res = NextResponse.json({ message: "Logged out successfully" }, { status: 200 });
 
     const isProd = process.env.NODE_ENV === "production";
 
@@ -35,11 +32,7 @@ export async function POST() {
       error: error?.message ?? "Unknown error",
     });
 
-    const apiError = createApiError(
-      500,
-      "Failed to logout",
-      "LOGOUT_FAILED"
-    );
+    const apiError = createApiError(500, "Failed to logout", "LOGOUT_FAILED");
 
     return NextResponse.json(apiError, { status: apiError.status });
   }

@@ -16,10 +16,7 @@ export const validatePassword = (value: string): string | undefined => {
   return undefined;
 };
 
-export const validateConfirmPassword = (
-  value: string,
-  password: string
-): string | undefined => {
+export const validateConfirmPassword = (value: string, password: string): string | undefined => {
   const trimmed = value.trim();
   const trimmedPassword = password.trim();
 

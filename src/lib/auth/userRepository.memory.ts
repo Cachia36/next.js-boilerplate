@@ -1,9 +1,6 @@
 import crypto from "crypto";
 import { DbUser } from "@/types/user";
-import {
-  UserRepository,
-  CreateUserInput,
-} from "./userRepository";
+import { UserRepository, CreateUserInput } from "./userRepository";
 import { HttpError } from "../errors";
 
 const globalForUsers = globalThis as unknown as {
@@ -28,11 +25,7 @@ export const memoryUserRepository: UserRepository = {
   async createUser(data: CreateUserInput) {
     const existing = await this.findByEmail(data.email);
     if (existing) {
-      throw new HttpError(
-        409,
-        "User already exists",
-        "AUTH_EMAIL_ALREADY_EXISTS"
-      );
+      throw new HttpError(409, "User already exists", "AUTH_EMAIL_ALREADY_EXISTS");
     }
 
     const user: DbUser = {

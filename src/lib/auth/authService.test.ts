@@ -90,8 +90,8 @@ describe("authService", () => {
     const fakeUserId = "non-existent-id";
     const newPassword = "Password1";
 
-    await expect(
-      authService.resetPassword(fakeUserId, newPassword)
-    ).rejects.toBeInstanceOf(HttpError);
+    await expect(authService.resetPassword(fakeUserId, newPassword)).rejects.toBeInstanceOf(
+      HttpError,
+    );
   });
 });

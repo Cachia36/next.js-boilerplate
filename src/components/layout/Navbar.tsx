@@ -85,7 +85,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b px-4 py-4 bg-background">
+    <nav className="bg-background sticky top-0 z-50 w-full border-b px-4 py-4">
       {/* MOBILE: top row */}
       <div className="flex items-center justify-between md:hidden">
         <div className="text-lg font-bold">Boilerplate</div>
@@ -94,27 +94,27 @@ export default function Navbar() {
           <button
             type="button"
             onClick={() => setIsOpen((prev) => !prev)}
-            className="p-2 rounded-md border focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-foreground"
+            className="focus-visible:ring-foreground rounded-md border p-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
             aria-label="Toggle navigation menu"
             aria-expanded={isOpen}
           >
             <div className="relative h-5 w-5">
               <span
                 className={cn(
-                  "absolute left-0 h-[2px] w-5 bg-foreground transition-transform duration-200 ease-out",
-                  isOpen ? "translate-y-[6px] rotate-45" : "translate-y-[0px]"
+                  "bg-foreground absolute left-0 h-[2px] w-5 transition-transform duration-200 ease-out",
+                  isOpen ? "translate-y-[6px] rotate-45" : "translate-y-[0px]",
                 )}
               />
               <span
                 className={cn(
-                  "absolute left-0 h-[2px] w-5 bg-foreground transition-all duration-200 ease-out",
-                  isOpen ? "opacity-0" : "opacity-100 translate-y-[6px]"
+                  "bg-foreground absolute left-0 h-[2px] w-5 transition-all duration-200 ease-out",
+                  isOpen ? "opacity-0" : "translate-y-[6px] opacity-100",
                 )}
               />
               <span
                 className={cn(
-                  "absolute left-0 h-[2px] w-5 bg-foreground transition-transform duration-200 ease-out",
-                  isOpen ? "translate-y-[6px] -rotate-45" : "translate-y-[12px]"
+                  "bg-foreground absolute left-0 h-[2px] w-5 transition-transform duration-200 ease-out",
+                  isOpen ? "translate-y-[6px] -rotate-45" : "translate-y-[12px]",
                 )}
               />
             </div>
@@ -125,18 +125,18 @@ export default function Navbar() {
       {/* MOBILE MENU */}
       <div
         className={cn(
-          "fixed inset-0 md:hidden z-40 transition-[opacity,visibility] duration-300",
+          "fixed inset-0 z-40 transition-[opacity,visibility] duration-300 md:hidden",
           isOpen
-            ? "opacity-100 visible pointer-events-auto"
-            : "opacity-0 invisible pointer-events-none"
+            ? "pointer-events-auto visible opacity-100"
+            : "pointer-events-none invisible opacity-0",
         )}
       >
         <div className="absolute inset-0 bg-black/40" onClick={closeMenu} />
 
         <div
           className={cn(
-            "absolute left-0 top-0 h-full w-3/4 max-w-xs bg-background border-r shadow-lg transform transition-transform duration-300 ease-out",
-            isOpen ? "translate-x-0" : "-translate-x-full"
+            "bg-background absolute top-0 left-0 h-full w-3/4 max-w-xs transform border-r shadow-lg transition-transform duration-300 ease-out",
+            isOpen ? "translate-x-0" : "-translate-x-full",
           )}
           onClick={(e) => e.stopPropagation()}
         >
@@ -170,15 +170,15 @@ export default function Navbar() {
       </div>
 
       {/* DESKTOP */}
-      <div className="hidden md:flex items-center justify-between">
-        <div className="flex items-center font-semibold text-lg">Logo</div>
+      <div className="hidden items-center justify-between md:flex">
+        <div className="flex items-center text-lg font-semibold">Logo</div>
 
         <div className="flex gap-8 text-sm font-medium">
           {navLinks.map((link) => (
             <Link
               key={`${link.href}-${link.label}`}
               href={link.href}
-              className="relative text-sm font-medium after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-foreground after:transition-all after:duration-300 hover:after:w-full"
+              className="after:bg-foreground relative text-sm font-medium after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 after:transition-all after:duration-300 hover:after:w-full"
             >
               {link.label}
             </Link>
@@ -188,11 +188,7 @@ export default function Navbar() {
         <div className="flex items-center gap-2">
           <ThemeToggle isDark={isDark} onToggle={toggleTheme} />
 
-          <AuthActions
-            loading={authLoading}
-            isLoggedIn={isLoggedIn}
-            onLogout={handleLogout}
-          />
+          <AuthActions loading={authLoading} isLoggedIn={isLoggedIn} onLogout={handleLogout} />
         </div>
       </div>
     </nav>

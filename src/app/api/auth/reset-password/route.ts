@@ -1,4 +1,3 @@
-// src/app/api/auth/reset-password/route.ts
 import { NextResponse } from "next/server";
 import { authService } from "@/lib/auth/authService";
 import { repo } from "@/lib/auth/currentRepo";
@@ -13,11 +12,7 @@ export async function POST(req: Request) {
     const { token, password } = body ?? {};
 
     if (!token || !password) {
-      const apiError = createApiError(
-        400,
-        "Token and password are required",
-        "VALIDATION_ERROR"
-      );
+      const apiError = createApiError(400, "Token and password are required", "VALIDATION_ERROR");
       return NextResponse.json(apiError, { status: apiError.status });
     }
 
@@ -32,17 +27,10 @@ export async function POST(req: Request) {
 
     logAuthEvent("password_reset_completed", { userId: user.id });
 
-    return NextResponse.json(
-      { message: "Password updated successfully" },
-      { status: 200 }
-    );
+    return NextResponse.json({ message: "Password updated successfully" }, { status: 200 });
   } catch (error: any) {
     if (error instanceof ZodError) {
-      const apiError = createApiError(
-        400,
-        "Invalid password",
-        "VALIDATION_ERROR"
-      );
+      const apiError = createApiError(400, "Invalid password", "VALIDATION_ERROR");
       return NextResponse.json(apiError, { status: apiError.status });
     }
 
@@ -55,12 +43,7 @@ export async function POST(req: Request) {
       error: error?.message ?? "Unknown error",
     });
 
-    const apiError = createApiError(
-      500,
-      "Failed to reset password",
-      "PASSWORD_RESET_FAILED"
-    );
+    const apiError = createApiError(500, "Failed to reset password", "PASSWORD_RESET_FAILED");
     return NextResponse.json(apiError, { status: apiError.status });
-
   }
 }

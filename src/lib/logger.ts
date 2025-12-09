@@ -1,10 +1,6 @@
 type LogContext = Record<string, unknown>;
 
-function baseLog(
-  level: "info" | "error" | "warn",
-  message: string,
-  context?: LogContext
-) {
+function baseLog(level: "info" | "error" | "warn", message: string, context?: LogContext) {
   if (process.env.NODE_ENV === "test") return;
 
   const payload = {

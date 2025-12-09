@@ -70,7 +70,10 @@ export async function forgotPasswordRequest(email: string): Promise<{ resetToken
   return handleResponse<{ resetToken?: string }>(res, "Failed to send reset email");
 }
 
-export async function resetPasswordRequest(token: string, password: string): Promise<{ message: string }> {
+export async function resetPasswordRequest(
+  token: string,
+  password: string,
+): Promise<{ message: string }> {
   const res = await fetch("/api/auth/reset-password", {
     method: "POST",
     headers: { "Content-Type": "application/json" },

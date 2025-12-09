@@ -6,9 +6,7 @@ export function middleware(req: NextRequest) {
 
   const cookieToken = req.cookies.get("access_token")?.value;
   const headerAuth = req.headers.get("authorization");
-  const headerToken = headerAuth?.startsWith("Bearer ")
-    ? headerAuth.slice(7)
-    : undefined;
+  const headerToken = headerAuth?.startsWith("Bearer ") ? headerAuth.slice(7) : undefined;
 
   const accessToken = cookieToken ?? headerToken;
 
@@ -50,11 +48,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    "/dashboard/:path*",
-    "/login",
-    "/register",
-    "/forgot-password",
-    "/reset-password",
-  ],
+  matcher: ["/dashboard/:path*", "/login", "/register", "/forgot-password", "/reset-password"],
 };

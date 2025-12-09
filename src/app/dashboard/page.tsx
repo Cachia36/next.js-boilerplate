@@ -11,9 +11,7 @@ export default async function DashboardPage() {
     return (
       <main className="p-8">
         <h1 className="text-2xl font-semibold">Dashboard</h1>
-        <p className="mt-4 text-red-500">
-          No access token found. Please log in again.
-        </p>
+        <p className="mt-4 text-red-500">No access token found. Please log in again.</p>
       </main>
     );
   }
@@ -25,7 +23,7 @@ export default async function DashboardPage() {
     // Token invalid/expired or user missing – don't redirect here to avoid loops.
     // Just show a nice fallback. You can add a "Go to login" link if you like.
     console.error("Dashboard getUserFromAccessToken error:", error);
-    
+
     return (
       <main className="p-8">
         <h1 className="text-2xl font-semibold">Dashboard</h1>
@@ -41,7 +39,7 @@ export default async function DashboardPage() {
       <h1 className="text-2xl font-semibold">Dashboard</h1>
       <p className="mt-4">Protected page. You must be logged in to see this.</p>
 
-      <pre className="mt-4 rounded bg-slate-900 text-slate-100 p-4 text-sm">
+      <pre className="mt-4 rounded bg-slate-900 p-4 text-sm text-slate-100">
         {JSON.stringify(
           {
             userId: user.id,
@@ -49,7 +47,7 @@ export default async function DashboardPage() {
             role: user.role,
           },
           null,
-          2
+          2,
         )}
       </pre>
     </main>
