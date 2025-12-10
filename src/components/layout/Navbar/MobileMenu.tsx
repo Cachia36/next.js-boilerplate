@@ -32,6 +32,9 @@ export function MobileMenu({
 
   // Only runs on the client, after hydration
   useEffect(() => {
+    // We intentionally set portalTarget once after mount to avoid SSR/hydration issues.
+    // This is safe and only runs on the client.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setPortalTarget(document.body);
   }, []);
 
