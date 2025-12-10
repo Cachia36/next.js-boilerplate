@@ -3,8 +3,17 @@ import { describe, it, expect, vi, afterEach } from "vitest";
 const ORIGINAL_ENV = process.env;
 
 function setTestEnv(env: NodeJS.ProcessEnv) {
+  const {
+    NODE_ENV: _NODE_ENV,
+    JWT_SECRET: _JWT_SECRET,
+    JWT_REFRESH_SECRET: _JWT_REFRESH_SECRET,
+    NEXT_PUBLIC_APP_URL: _NEXT_PUBLIC_APP_URL,
+    EMAIL_API_KEY: _EMAIL_API_KEY,
+    ...rest
+  } = ORIGINAL_ENV;
+
   process.env = {
-    ...ORIGINAL_ENV,
+    ...rest,
     ...env,
   };
 }
