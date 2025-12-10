@@ -43,7 +43,7 @@ export function MobileMenu({
   return createPortal(
     <div
       className={cn(
-        "fixed inset-0 z-[70] transition-[opacity,visibility] duration-300 md:hidden",
+        "fixed inset-0 z-70 transition-[opacity,visibility] duration-300 md:hidden",
         isOpen
           ? "pointer-events-auto visible opacity-100"
           : "pointer-events-none invisible opacity-0",
