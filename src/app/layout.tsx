@@ -26,19 +26,10 @@ const themeInitCode = `
       var STORAGE_KEY = 'app:theme';
       var stored = localStorage.getItem(STORAGE_KEY);
       var systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      var theme = stored || 'system';
-      var effective = theme === 'system' ? (systemDark ? 'dark' : 'light') : theme;
+      var theme = stored || (systemDark ? 'dark' : 'light');
 
       var root = document.documentElement;
-      root.dataset.theme = effective;
-
-      if (effective === 'dark') {
-        root.style.setProperty('--background', '#0a0a0a');
-        root.style.setProperty('--foreground', '#e5e5e5');
-      } else {
-        root.style.setProperty('--background', '#fafafa');
-        root.style.setProperty('--foreground', '#1a1a1a');
-      }
+      root.dataset.theme = theme;
     } catch (e) {
       // fail silently
     }
