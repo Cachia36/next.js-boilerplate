@@ -14,7 +14,7 @@ const envSchema = z.object({
 const parsed = envSchema.safeParse({
   NODE_ENV: process.env.NODE_ENV,
   JWT_SECRET: process.env.JWT_SECRET,
-  JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET,
+  JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET,
   NEXT_PUBLIC_APP_URL:
     process.env.NEXT_PUBLIC_APP_URL ||
     (process.env.NODE_ENV === "production" ? undefined : "http://localhost:3000"),
