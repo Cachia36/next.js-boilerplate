@@ -23,17 +23,27 @@ jobs:
       - name: Load .env.test
         run: |
           echo "Loading .env.test into environment..."
+          if [ ! -f .env.test ]; then
+            echo ".env.test not found!" >&2
+            exit 1
+          fi
           while IFS='=' read -r key value; do
             if [[ ! "$key" =~ ^# && -n "$key" ]]; then
               echo "$key=$value" >> $GITHUB_ENV
             fi
           done < .env.test
 
+
       - name: Run lint
         run: npm run lint
 
       - name: Run tests
         run: npm test
+
+      - name: Debug env (safe)
+        run: |
+          echo "RESEND_API_KEY length: ${#RESEND_API_KEY}"
+          echo "NODE_ENV: $NODE_ENV"
 
       - name: Ensure it builds
         run: npm run build
