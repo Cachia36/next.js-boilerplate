@@ -43,6 +43,9 @@ const themeInitCode = `
         root.style.setProperty('--background', '#fafafa');
         root.style.setProperty('--foreground', '#1a1a1a');
       }
+
+      // keep cookie in sync so SSR can match on next request
+      document.cookie = 'app_theme=' + effective + '; path=/; max-age=31536000; samesite=lax';
     } catch (e) {
       // fail silently
     }
