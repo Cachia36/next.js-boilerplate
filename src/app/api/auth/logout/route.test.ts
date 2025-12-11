@@ -41,17 +41,17 @@ vi.mock("next/server", () => {
 });
 
 // logger
-vi.mock("@/lib/logger", () => ({
+vi.mock("@/lib/core/logger", () => ({
   logAuthEvent: vi.fn(),
 }));
 
 // env – default to production so we assert secure: true
-vi.mock("@/lib/env", () => ({
+vi.mock("@/lib/core/env", () => ({
   NODE_ENV: "production",
 }));
 
 // withApiRoute – identity
-vi.mock("@/lib/withApiRoute", () => ({
+vi.mock("@/lib/http/withApiRoute", () => ({
   withApiRoute: (handler: any) => handler,
 }));
 

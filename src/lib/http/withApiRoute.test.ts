@@ -1,12 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
 // Mock handleApiError BEFORE importing withApiRoute
-vi.mock("./api-error-handler", () => ({
+vi.mock("./apiErrorHandler", () => ({
   handleApiError: vi.fn(),
 }));
 
 import { withApiRoute } from "./withApiRoute";
-import { handleApiError } from "./api-error-handler";
+import { handleApiError } from "./apiErrorHandler";
 
 const mockHandleApiError = handleApiError as unknown as ReturnType<typeof vi.fn>;
 

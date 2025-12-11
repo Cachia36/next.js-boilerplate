@@ -67,30 +67,30 @@ vi.mock("@/lib/email/emailService", () => ({
 }));
 
 // env
-vi.mock("@/lib/env", () => ({
+vi.mock("@/lib/core/env", () => ({
   APP_URL: "http://app.test",
   NODE_ENV: "development",
 }));
 
 // rate limiter
-vi.mock("@/lib/rateLimiter", () => ({
+vi.mock("@/lib/http/rateLimiter", () => ({
   checkRateLimit: vi.fn(),
 }));
 
 // logger
-vi.mock("@/lib/logger", () => ({
+vi.mock("@/lib/core/logger", () => ({
   logAuthEvent: vi.fn(),
 }));
 
 // validation
-vi.mock("@/lib/validation/authSchemas", () => ({
+vi.mock("@/lib/auth/domain/validation/authSchemas", () => ({
   emailSchema: {
     parse: vi.fn(),
   },
 }));
 
 // withApiRoute – return handler directly
-vi.mock("@/lib/withApiRoute", () => ({
+vi.mock("@/lib/http/withApiRoute", () => ({
   withApiRoute: (handler: any) => handler,
 }));
 
@@ -104,7 +104,7 @@ import { repo } from "@/lib/auth/repositories/currentRepo";
 import { sendPasswordResetEmail } from "@/lib/email/emailService";
 import { checkRateLimit } from "@/lib/http/rateLimiter";
 import { logAuthEvent } from "@/lib/core/logger";
-import { emailSchema } from "@/lib/auth/validation/authSchemas";
+import { emailSchema } from "@/lib/auth/domain/validation/authSchemas";
 
 const mockRandomBytes = crypto.randomBytes as unknown as ReturnType<typeof vi.fn>;
 const mockFindByEmail = repo.findByEmail as unknown as ReturnType<typeof vi.fn>;

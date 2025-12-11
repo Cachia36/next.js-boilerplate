@@ -41,14 +41,14 @@ vi.mock("next/server", () => {
 });
 
 // authService.register
-vi.mock("@/lib/auth/authService", () => ({
+vi.mock("@/lib/auth/domain/authService", () => ({
   authService: {
     register: vi.fn(),
   },
 }));
 
 // validation schemas
-vi.mock("@/lib/validation/authSchemas", () => ({
+vi.mock("@/lib/auth/domain/validation/authSchemas", () => ({
   emailSchema: {
     parse: vi.fn(),
   },
@@ -58,17 +58,17 @@ vi.mock("@/lib/validation/authSchemas", () => ({
 }));
 
 // logger
-vi.mock("@/lib/logger", () => ({
+vi.mock("@/lib/core/logger", () => ({
   logAuthEvent: vi.fn(),
 }));
 
 // env
-vi.mock("@/lib/env", () => ({
+vi.mock("@/lib/core/env", () => ({
   NODE_ENV: "production", // so secure cookies should be true
 }));
 
 // withApiRoute – return handler directly
-vi.mock("@/lib/withApiRoute", () => ({
+vi.mock("@/lib/http/withApiRoute", () => ({
   withApiRoute: (handler: any) => handler,
 }));
 
@@ -78,7 +78,7 @@ vi.mock("@/lib/withApiRoute", () => ({
 
 import { POST } from "./route";
 import { authService } from "@/lib/auth/domain/authService";
-import { emailSchema, passwordSchema } from "@/lib/auth/validation/authSchemas";
+import { emailSchema, passwordSchema } from "@/lib/auth/domain/validation/authSchemas";
 import { logAuthEvent } from "@/lib/core/logger";
 
 const mockRegister = (authService as any).register as ReturnType<typeof vi.fn>;

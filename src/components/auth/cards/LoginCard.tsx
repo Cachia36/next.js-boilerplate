@@ -6,7 +6,7 @@ import Link from "next/link";
 import { LogIn, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
-import { validateEmail, validatePassword } from "@/lib/auth/validation/auth";
+import { validateEmail, validatePassword } from "@/lib/auth/domain/validation/auth";
 import { cn } from "@/lib/core/utils";
 import { EmailField } from "../fields/EmailField";
 import { PasswordField } from "../fields/PasswordField";

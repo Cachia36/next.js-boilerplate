@@ -5,7 +5,7 @@ import { sendPasswordResetEmail } from "@/lib/email/emailService";
 import { APP_URL, NODE_ENV } from "@/lib/core/env";
 import { checkRateLimit } from "@/lib/http/rateLimiter";
 import { logAuthEvent } from "@/lib/core/logger";
-import { emailSchema } from "@/lib/auth/validation/authSchemas";
+import { emailSchema } from "@/lib/auth/domain/validation/authSchemas";
 import { withApiRoute } from "@/lib/http/withApiRoute";
 import { TooManyRequests } from "@/lib/core/errors";
 

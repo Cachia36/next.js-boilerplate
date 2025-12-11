@@ -8,7 +8,7 @@ import { ShieldCheck, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/core/utils";
 import { PasswordField } from "../fields/PasswordField";
-import { validatePassword, validateConfirmPassword } from "@/lib/auth/validation/auth";
+import { validatePassword, validateConfirmPassword } from "@/lib/auth/domain/validation/auth";
 import { resetPasswordRequest } from "@/lib/auth/client/authClient";
 
 type FieldErrors = {

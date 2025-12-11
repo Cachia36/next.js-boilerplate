@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-vi.mock("./repositories/currentRepo", () => ({
+vi.mock("../repositories/currentRepo", () => ({
   repo: {
     findByEmail: vi.fn(),
     createUser: vi.fn(),
@@ -20,7 +20,7 @@ vi.mock("./jwtService", () => ({
   verifyAccessToken: vi.fn(),
 }));
 
-vi.mock("../logger", () => ({
+vi.mock("../../core/logger", () => ({
   logAuthEvent: vi.fn(),
 }));
 

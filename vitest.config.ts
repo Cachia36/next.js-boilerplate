@@ -8,7 +8,8 @@ dotenv.config({ path: path.resolve(__dirname, ".env.test") });
 export default defineConfig({
   test: {
     globals: true,
-    environment: "node",
+    environment: "jsdom",
+    setupFiles: "./vitest.setup.ts"
   },
   resolve: {
     alias: {

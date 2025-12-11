@@ -11,7 +11,7 @@ import {
   validateEmail,
   validatePassword,
   validateConfirmPassword,
-} from "@/lib/auth/validation/auth";
+} from "@/lib/auth/domain/validation/auth";
 import { EmailField } from "../fields/EmailField";
 import { PasswordField } from "../fields/PasswordField";
 import { registerRequest } from "@/lib/auth/client/authClient";

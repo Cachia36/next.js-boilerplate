@@ -21,7 +21,7 @@ vi.mock("jsonwebtoken", () => ({
   },
 }));
 
-vi.mock("../env", () => ({
+vi.mock("../../core/env", () => ({
   JWT_SECRET: "access-secret",
   JWT_REFRESH_SECRET: "refresh-secret",
 }));

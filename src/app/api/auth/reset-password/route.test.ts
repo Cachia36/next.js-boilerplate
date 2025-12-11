@@ -41,7 +41,7 @@ vi.mock("next/server", () => {
 });
 
 // authService.resetPassword
-vi.mock("@/lib/auth/authService", () => ({
+vi.mock("@/lib/auth/domain/authService", () => ({
   authService: {
     resetPassword: vi.fn(),
   },
@@ -55,19 +55,19 @@ vi.mock("@/lib/auth/repositories/currentRepo", () => ({
 }));
 
 // validation
-vi.mock("@/lib/validation/authSchemas", () => ({
+vi.mock("@/lib/auth/domain/validation/authSchemas", () => ({
   passwordSchema: {
     parse: vi.fn(),
   },
 }));
 
 // logger
-vi.mock("@/lib/logger", () => ({
+vi.mock("@/lib/core/logger", () => ({
   logAuthEvent: vi.fn(),
 }));
 
 // withApiRoute – return handler directly so POST === handler
-vi.mock("@/lib/withApiRoute", () => ({
+vi.mock("@/lib/http/withApiRoute", () => ({
   withApiRoute: (handler: any) => handler,
 }));
 
@@ -78,7 +78,7 @@ vi.mock("@/lib/withApiRoute", () => ({
 import { POST } from "./route";
 import { authService } from "@/lib/auth/domain/authService";
 import { repo } from "@/lib/auth/repositories/currentRepo";
-import { passwordSchema } from "@/lib/auth/validation/authSchemas";
+import { passwordSchema } from "@/lib/auth/domain/validation/authSchemas";
 import { logAuthEvent } from "@/lib/core/logger";
 
 const mockResetPassword = (authService as any).resetPassword as ReturnType<typeof vi.fn>;

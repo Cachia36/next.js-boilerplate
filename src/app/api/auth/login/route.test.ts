@@ -42,24 +42,24 @@ vi.mock("next/server", () => {
 });
 
 // authService.login
-vi.mock("@/lib/auth/authService", () => ({
+vi.mock("@/lib/auth/domain/authService", () => ({
   authService: {
     login: vi.fn(),
   },
 }));
 
 // rate limiter
-vi.mock("@/lib/rateLimiter", () => ({
+vi.mock("@/lib/http/rateLimiter", () => ({
   checkRateLimit: vi.fn(),
 }));
 
 // logger
-vi.mock("@/lib/logger", () => ({
+vi.mock("@/lib/core/logger", () => ({
   logAuthEvent: vi.fn(),
 }));
 
 // validation schemas
-vi.mock("@/lib/validation/authSchemas", () => ({
+vi.mock("@/lib/auth/domain/validation/authSchemas", () => ({
   emailSchema: {
     parse: vi.fn(),
   },
@@ -69,12 +69,12 @@ vi.mock("@/lib/validation/authSchemas", () => ({
 }));
 
 // env
-vi.mock("@/lib/env", () => ({
+vi.mock("@/lib/core/env", () => ({
   NODE_ENV: "production", // so we can assert secure: true on cookies
 }));
 
 // withApiRoute – return handler directly (so POST === handler)
-vi.mock("@/lib/withApiRoute", () => ({
+vi.mock("@/lib/http/withApiRoute", () => ({
   withApiRoute: (handler: any) => handler,
 }));
 
@@ -86,7 +86,7 @@ import { POST } from "./route";
 import { authService } from "@/lib/auth/domain/authService";
 import { checkRateLimit } from "@/lib/http/rateLimiter";
 import { logAuthEvent } from "@/lib/core/logger";
-import { emailSchema, passwordSchema } from "@/lib/auth/validation/authSchemas";
+import { emailSchema, passwordSchema } from "@/lib/auth/domain/validation/authSchemas";
 import { HttpError } from "@/lib/core/errors";
 
 const mockLogin = (authService as any).login as ReturnType<typeof vi.fn>;
@@ -218,7 +218,7 @@ describe("POST /api/auth/login", () => {
       statusCode: 429,
       code: "RATE_LIMIT_EXCEEDED",
       // don't assert exact text – just ensure it's a string
-      message: expect.any(String),
+      message: "Too many reset attempts. Please try again later.",
     });
 
     expect(mockCheckRateLimit).toHaveBeenCalledWith(`login:${ip}`, {

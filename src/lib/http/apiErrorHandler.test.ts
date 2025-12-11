@@ -20,13 +20,13 @@ vi.mock("next/server", () => {
 });
 
 // Mock logger
-vi.mock("./logger", () => ({
+vi.mock("../core/logger", () => ({
   logError: vi.fn(),
   logWarn: vi.fn(),
 }));
 
 // Mock errors: HttpError + toApiError
-vi.mock("./errors", () => {
+vi.mock("../core/errors", () => {
   class MockHttpError extends Error {
     statusCode: number;
     code: string;
@@ -50,7 +50,7 @@ vi.mock("./errors", () => {
 // ----------------------
 
 import { NextResponse } from "next/server";
-import { handleApiError } from "./api-error-handler";
+import { handleApiError } from "./apiErrorHandler";
 import { HttpError, toApiError } from "../core/errors";
 import { logError, logWarn } from "../core/logger";
 

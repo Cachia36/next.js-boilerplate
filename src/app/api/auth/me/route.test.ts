@@ -41,19 +41,19 @@ vi.mock("next/server", () => {
 });
 
 // authService.getUserFromAccessToken
-vi.mock("@/lib/auth/authService", () => ({
+vi.mock("@/lib/auth/domain/authService", () => ({
   authService: {
     getUserFromAccessToken: vi.fn(),
   },
 }));
 
 // logger
-vi.mock("@/lib/logger", () => ({
+vi.mock("@/lib/core/logger", () => ({
   logAuthEvent: vi.fn(),
 }));
 
 // withApiRoute – identity
-vi.mock("@/lib/withApiRoute", () => ({
+vi.mock("@/lib/http/withApiRoute", () => ({
   withApiRoute: (handler: any) => handler,
 }));
 

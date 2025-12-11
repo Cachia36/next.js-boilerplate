@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { authService } from "@/lib/auth/domain/authService";
 import { checkRateLimit } from "@/lib/http/rateLimiter";
 import { logAuthEvent } from "@/lib/core/logger";
-import { emailSchema, passwordSchema } from "@/lib/auth/validation/authSchemas";
+import { emailSchema, passwordSchema } from "@/lib/auth/domain/validation/authSchemas";
 import { NODE_ENV } from "@/lib/core/env";
 import { withApiRoute } from "@/lib/http/withApiRoute";
 import { TooManyRequests } from "@/lib/core/errors";

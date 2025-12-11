@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { authService } from "@/lib/auth/domain/authService";
 import { repo } from "@/lib/auth/repositories/currentRepo";
-import { passwordSchema } from "@/lib/auth/validation/authSchemas";
+import { passwordSchema } from "@/lib/auth/domain/validation/authSchemas";
 import { NotFound, TooManyRequests } from "@/lib/core/errors";
 import { logAuthEvent } from "@/lib/core/logger";
 import { withApiRoute } from "@/lib/http/withApiRoute";
