@@ -8,6 +8,14 @@ jobs:
   test-frontend:
     runs-on: ubuntu-latest
 
+    env:
+      NODE_ENV: test
+      JWT_SECRET: super-long-random-secret-1234567890
+      JWT_REFRESH_SECRET: another-long-secret-optional
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+      PERSISTENCE_DRIVER: memory
+      RESEND_API_KEY: apikey   # <--- dummy value so build passes
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -20,30 +28,16 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Load .env.test
+      - name: Debug env (safe)
         run: |
-          echo "Loading .env.test into environment..."
-          if [ ! -f .env.test ]; then
-            echo ".env.test not found!" >&2
-            exit 1
-          fi
-          while IFS='=' read -r key value; do
-            if [[ ! "$key" =~ ^# && -n "$key" ]]; then
-              echo "$key=$value" >> $GITHUB_ENV
-            fi
-          done < .env.test
-
+          echo "RESEND_API_KEY length: ${#RESEND_API_KEY}"
+          echo "NODE_ENV: $NODE_ENV"
 
       - name: Run lint
         run: npm run lint
 
       - name: Run tests
         run: npm test
-
-      - name: Debug env (safe)
-        run: |
-          echo "RESEND_API_KEY length: ${#RESEND_API_KEY}"
-          echo "NODE_ENV: $NODE_ENV"
 
       - name: Ensure it builds
         run: npm run build
