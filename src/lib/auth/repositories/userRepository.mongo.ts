@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 import type { DbUser, UserRole } from "@/types/user";
 import type { UserRepository, CreateUserInput } from "./userRepository";
 import { getDb } from "@/lib/db/mongoClient";
-import { HttpError } from "@/lib/errors";
+import { NotFound, Conflict } from "@/lib/errors";
 
 type UserDocument = {
   _id?: ObjectId;
@@ -63,7 +63,7 @@ export const mongoUserRepository: UserRepository = {
     // same behaviour as memory repo
     const existing = await col.findOne({ email: normalizedEmail });
     if (existing) {
-      throw new HttpError(409, "User already exists", "AUTH_EMAIL_ALREADY_EXISTS");
+      throw Conflict("User already exists", "AUTH_EMAIL_ALREADY_EXISTS");
     }
 
     const now = new Date();
@@ -97,7 +97,7 @@ export const mongoUserRepository: UserRepository = {
       .updateOne({ _id: new ObjectId(userId) }, { $set: { passwordHash } });
 
     if (res.matchedCount === 0) {
-      throw new HttpError(404, "User does not exist", "USER_NOT_FOUND");
+      throw NotFound("User does not exist", "USER_NOT_FOUND");
     }
   },
 
@@ -114,7 +114,7 @@ export const mongoUserRepository: UserRepository = {
     );
 
     if (res.matchedCount === 0) {
-      throw new HttpError(404, "User does not exist", "USER_NOT_FOUND");
+      throw NotFound("User does not exist", "USER_NOT_FOUND");
     }
   },
 

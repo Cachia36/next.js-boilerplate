@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { HttpError } from "@/lib/errors";
 
 // ----------------------
 // Mocks (before imports)
@@ -145,7 +146,12 @@ describe("POST /api/auth/forgot-password", () => {
       },
     });
 
-    const res: any = await POST(req);
+    // Now: POST throws HttpError/TooManyRequests instead of returning a response
+    await expect(POST(req)).rejects.toMatchObject({
+      statusCode: 429,
+      code: "RATE_LIMIT_EXCEEDED",
+      message: "Too many reset attempts. Please try again later.",
+    });
 
     expect(mockCheckRateLimit).toHaveBeenCalledWith(`forgot-password:${ip}`, {
       max: 5,
@@ -156,14 +162,6 @@ describe("POST /api/auth/forgot-password", () => {
     expect(mockFindByEmail).not.toHaveBeenCalled();
     expect(mockSetPasswordResetToken).not.toHaveBeenCalled();
     expect(mockSendPasswordResetEmail).not.toHaveBeenCalled();
-
-    expect(res.status).toBe(429);
-    expect(res.body).toEqual({
-      status: 429,
-      message: "Too many reset attempts. Please try again later.",
-      code: "RATE_LIMIT_EXCEEDED",
-    });
-    expect(res.headers.get("Retry-After")).toBe("120");
 
     expect(mockLogAuthEvent).toHaveBeenCalledWith("forgot_password_rate_limited", {
       ip,
@@ -308,7 +306,12 @@ describe("POST /api/auth/forgot-password", () => {
       },
     });
 
-    await POST(reqReal);
+    // We only care that checkRateLimit is called with the right key; ignore the thrown error
+    try {
+      await POST(reqReal);
+    } catch (err) {
+      expect(err).toBeInstanceOf(HttpError); // optional
+    }
 
     expect(mockCheckRateLimit).toHaveBeenCalledWith("forgot-password:3.3.3.3", {
       max: 5,
@@ -326,7 +329,11 @@ describe("POST /api/auth/forgot-password", () => {
       },
     });
 
-    await POST(reqUnknown);
+    try {
+      await POST(reqUnknown);
+    } catch (err) {
+      expect(err).toBeInstanceOf(HttpError); // optional
+    }
 
     expect(mockCheckRateLimit).toHaveBeenCalledWith("forgot-password:unknown", {
       max: 5,

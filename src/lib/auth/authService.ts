@@ -5,6 +5,7 @@ import { hashPassword, verifyPassword } from "./passwordService";
 import { generateAccessToken, generateRefreshToken, verifyAccessToken } from "./jwtService";
 import type { AuthTokenPayload } from "@/types/auth";
 import { logAuthEvent } from "../logger";
+import { Unauthorized, Conflict } from "../errors";
 
 export type AuthResult = {
   user: User;
@@ -25,7 +26,7 @@ export const authService = {
 
     const existing = await repo.findByEmail(normalizedEmail);
     if (existing) {
-      throw new HttpError(409, "Email already in use", "AUTH_EMAIL_ALREADY_EXISTS");
+      throw Conflict("Email already in use", "AUTH_EMAIL_ALREADY_EXISTS");
     }
 
     const passwordHash = await hashPassword(password);
@@ -51,13 +52,13 @@ export const authService = {
     const found = await repo.findByEmail(normalizedEmail);
     if (!found) {
       logAuthEvent("login_failed_no_user", { email: normalizedEmail });
-      throw new HttpError(401, "Invalid credentials", "AUTH_INVALID_CREDENTIALS");
+      throw Unauthorized("Invalid credentials", "AUTH_INVALID_CREDENTIALS");
     }
 
     const match = await verifyPassword(password, found.passwordHash);
     if (!match) {
       logAuthEvent("login_failed_bad_password", { userId: found.id });
-      throw new HttpError(401, "Invalid credentials", "AUTH_INVALID_CREDENTIALS");
+      throw Unauthorized("Invalid credentials", "AUTH_INVALID_CREDENTIALS");
     }
 
     const user = toPublicUser(found);

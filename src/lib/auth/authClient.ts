@@ -1,15 +1,27 @@
 import type { AuthResult } from "./authService";
 import type { User } from "@/types/user";
 
-type ApiError = Error & { statusCode?: number };
+type ApiError = Error & {
+  statusCode?: number;
+  code?: string;
+};
+
+type ServerApiError = {
+  status: number;
+  message: string;
+  code: string;
+};
 
 async function handleResponse<T>(res: Response, fallbackMessage: string): Promise<T> {
-  const data = await res.json().catch(() => null);
+  const data = (await res.json().catch(() => null)) as ServerApiError | null;
 
   if (!res.ok) {
     const message = data?.message ?? fallbackMessage;
     const err: ApiError = new Error(message);
-    err.statusCode = res.status;
+
+    err.statusCode = data?.status ?? res.status;
+    err.code = data?.code;
+
     throw err;
   }
 
@@ -22,12 +34,8 @@ export async function getCurrentUser(): Promise<{ user: User | null }> {
     credentials: "include",
   });
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch current user");
-  }
-
-  const data = (await res.json()) as { user: User | null };
-  return data;
+  // /me always returns 200 with { user: ... }
+  return handleResponse<{ user: User | null }>(res, "Failed to fetch current user");
 }
 
 export async function loginRequest(email: string, password: string): Promise<AuthResult> {
@@ -46,9 +54,7 @@ export async function logoutRequest(): Promise<void> {
     credentials: "include",
   });
 
-  if (!res.ok) {
-    throw new Error("Failed to logout");
-  }
+  await handleResponse<{ message: string }>(res, "Failed to logout");
 }
 
 export async function registerRequest(email: string, password: string): Promise<AuthResult> {

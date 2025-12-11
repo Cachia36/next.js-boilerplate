@@ -43,3 +43,9 @@ export const Forbidden = (message = "Forbidden", code = "FORBIDDEN") =>
 
 export const NotFound = (message = "Not Found", code = "NOT_FOUND") =>
   new HttpError(404, message, code);
+
+export const Conflict = (message = "Conflict", code = "CONFLICT") =>
+  new HttpError(409, message, code);
+
+export const TooManyRequests = (message = "Too many requests", code = "RATE_LIMIT_EXCEEDED") =>
+  new HttpError(429, message, code);

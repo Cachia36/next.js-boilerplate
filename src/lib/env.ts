@@ -7,9 +7,9 @@ const baseSchema = z.object({
   JWT_REFRESH_SECRET: z.string().optional(),
 
   NEXT_PUBLIC_APP_URL: z.string().url().optional(),
-  EMAIL_API_KEY: z.string().optional(),
 
   // Optional at first — validated later based on driver
+  RESEND_API_KEY: z.string().optional(),
   MONGODB_URI: z.string().optional(),
   MONGODB_DB_NAME: z.string().optional(),
 
@@ -25,8 +25,8 @@ const parsed = baseSchema.safeParse({
   NEXT_PUBLIC_APP_URL:
     process.env.NEXT_PUBLIC_APP_URL ||
     (process.env.NODE_ENV === "production" ? undefined : "http://localhost:3000"),
-  EMAIL_API_KEY: process.env.EMAIL_API_KEY,
 
+  RESEND_API_KEY: process.env.RESEND_API_KEY,
   MONGODB_URI: process.env.MONGODB_URI,
   MONGODB_DB_NAME: process.env.MONGODB_DB_NAME,
   PERSISTENCE_DRIVER: process.env.PERSISTENCE_DRIVER,
@@ -38,6 +38,12 @@ if (!parsed.success) {
 }
 
 const env = parsed.data;
+
+if (env.NODE_ENV === "production") {
+  if (!env.RESEND_API_KEY) {
+    throw new Error("RESEND_API_KEY is required when NODE_ENV='production'");
+  }
+}
 
 if (env.PERSISTENCE_DRIVER === "mongo") {
   if (!env.MONGODB_URI) {
@@ -54,7 +60,7 @@ export const JWT_REFRESH_SECRET = env.JWT_REFRESH_SECRET ?? env.JWT_SECRET;
 export const APP_URL =
   env.NEXT_PUBLIC_APP_URL ?? (NODE_ENV === "development" ? "http://localhost:3000" : "");
 
-export const EMAIL_API_KEY = env.EMAIL_API_KEY;
+export const RESEND_API_KEY = env.RESEND_API_KEY;
 
 export const PERSISTENCE_DRIVER = env.PERSISTENCE_DRIVER;
 

@@ -8,7 +8,7 @@ function setTestEnv(env: NodeJS.ProcessEnv) {
     JWT_SECRET: _JWT_SECRET,
     JWT_REFRESH_SECRET: _JWT_REFRESH_SECRET,
     NEXT_PUBLIC_APP_URL: _NEXT_PUBLIC_APP_URL,
-    EMAIL_API_KEY: _EMAIL_API_KEY,
+    RESEND_API_KEY: _RESEND_API_KEY,
     PERSISTENCE_DRIVER: _PERSISTENCE_DRIVER,
     ...rest
   } = ORIGINAL_ENV;
@@ -35,7 +35,7 @@ describe("env config", () => {
       JWT_SECRET: "access-secret",
       JWT_REFRESH_SECRET: "refresh-secret",
       NEXT_PUBLIC_APP_URL: "http://example.com",
-      EMAIL_API_KEY: "email-key",
+      RESEND_API_KEY: "email-key",
     });
 
     const env = await import("./env");
@@ -44,7 +44,7 @@ describe("env config", () => {
     expect(env.JWT_SECRET).toBe("access-secret");
     expect(env.JWT_REFRESH_SECRET).toBe("refresh-secret");
     expect(env.APP_URL).toBe("http://example.com");
-    expect(env.EMAIL_API_KEY).toBe("email-key");
+    expect(env.RESEND_API_KEY).toBe("email-key");
   });
 
   it("defaults JWT_REFRESH_SECRET to JWT_SECRET", async () => {
@@ -74,6 +74,7 @@ describe("env config", () => {
     setTestEnv({
       NODE_ENV: "production",
       JWT_SECRET: "secret",
+      RESEND_API_KEY: "key",
     });
 
     const env = await import("./env");
@@ -129,10 +130,10 @@ describe("env config", () => {
   });
 
   // ---------------------------------------------------------------------------
-  // Optional EMAIL_API_KEY
+  // Optional RESEND_API_KEY
   // ---------------------------------------------------------------------------
 
-  it("allows EMAIL_API_KEY to be undefined", async () => {
+  it("allows RESEND_API_KEY to be undefined", async () => {
     setTestEnv({
       NODE_ENV: "development",
       JWT_SECRET: "secret",
@@ -140,6 +141,6 @@ describe("env config", () => {
 
     const env = await import("./env");
 
-    expect(env.EMAIL_API_KEY).toBeUndefined();
+    expect(env.RESEND_API_KEY).toBeUndefined();
   });
 });

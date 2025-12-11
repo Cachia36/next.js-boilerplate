@@ -1,21 +1,27 @@
 import type { EmailProvider } from "./emailProvider";
 import { consoleEmailProvider } from "./providers/consoleEmailProvider";
-// later: import { resendEmailProvider } from "./providers/resendEmailProvider";
-import { NODE_ENV } from "../env";
+import { resendEmailProvider } from "./providers/resendEmailProvider";
+import { NODE_ENV, RESEND_API_KEY } from "../env";
 
-let provider: EmailProvider = consoleEmailProvider;
+let provider: EmailProvider;
 
-// In tests or prod you can swap this
+if (RESEND_API_KEY) {
+  provider = resendEmailProvider;
+} else {
+  provider = consoleEmailProvider;
+}
+
+// You can still override this in tests if needed
 export function setEmailProvider(p: EmailProvider) {
   provider = p;
 }
 
 export async function sendPasswordResetEmail(to: string, resetLink: string): Promise<void> {
-  if (NODE_ENV !== "production") {
-    // In dev we still log even if we later use a real provider
-    await consoleEmailProvider.sendPasswordReset(to, resetLink);
-    return;
-  }
-
+  // Always use the configured provider
   await provider.sendPasswordReset(to, resetLink);
+
+  // Optional: also log to console in non-production for easier debugging
+  if (NODE_ENV !== "production") {
+    await consoleEmailProvider.sendPasswordReset(to, resetLink);
+  }
 }

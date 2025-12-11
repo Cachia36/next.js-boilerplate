@@ -5,6 +5,7 @@ import { logAuthEvent } from "@/lib/logger";
 import { emailSchema, passwordSchema } from "@/lib/validation/authSchemas";
 import { NODE_ENV } from "@/lib/env";
 import { withApiRoute } from "@/lib/withApiRoute";
+import { TooManyRequests } from "@/lib/errors";
 
 const handler = async (req: Request): Promise<Response> => {
   const ip = req.headers.get("x-forwarded-for") ?? req.headers.get("x-real-ip") ?? "unknown";
@@ -17,18 +18,9 @@ const handler = async (req: Request): Promise<Response> => {
       retryAfterSeconds: rate.retryAfterSeconds ?? 60,
     });
 
-    return NextResponse.json(
-      {
-        status: 429,
-        message: "Too many login attempts. Please try again later.",
-        code: "RATE_LIMIT_EXCEEDED",
-      },
-      {
-        status: 429,
-        headers: {
-          "Retry-After": String(rate.retryAfterSeconds ?? 60),
-        },
-      },
+    throw TooManyRequests(
+      "Too many reset attempts. Please try again later.",
+      "RATE_LIMIT_EXCEEDED",
     );
   }
 

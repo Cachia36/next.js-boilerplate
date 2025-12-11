@@ -2,24 +2,40 @@ import { NextResponse } from "next/server";
 import { authService } from "@/lib/auth/authService";
 import { repo } from "@/lib/auth/repositories/currentRepo";
 import { passwordSchema } from "@/lib/validation/authSchemas";
-import { HttpError } from "@/lib/errors";
+import { NotFound, TooManyRequests } from "@/lib/errors";
 import { logAuthEvent } from "@/lib/logger";
 import { withApiRoute } from "@/lib/withApiRoute";
+import { checkRateLimit } from "@/lib/rateLimiter";
+import { BadRequest } from "@/lib/errors";
 
 const handler = async (req: Request): Promise<Response> => {
+  const ip = req.headers.get("x-forwarded-for") ?? req.headers.get("x-real-ip") ?? "unknown";
+
+  const rate = checkRateLimit(`reset-password:${ip}`, { max: 10, windowMs: 60_000 });
+
+  if (!rate.allowed) {
+    logAuthEvent("reset-password_rate_limited", {
+      ip,
+      retryAfterSeconds: rate.retryAfterSeconds ?? 60,
+    });
+
+    throw TooManyRequests(
+      "Too many reset attempts. Please try again later.",
+      "RATE_LIMIT_EXCEEDED",
+    );
+  }
   const body = await req.json();
   const { token, password } = body ?? {};
-
   if (!token) {
     // Business-level validation (not just field shape)
-    throw new HttpError(400, "Token is required", "VALIDATION_ERROR");
+    throw BadRequest("Token is required", "VALIDATION_ERROR");
   }
 
   const parsedPassword = passwordSchema.parse(password);
 
   const user = await repo.findByPasswordResetToken(token);
   if (!user) {
-    throw new HttpError(400, "Invalid or expired reset token", "TOKEN_INVALID");
+    throw NotFound("Invalid or expired reset token", "TOKEN_INVALID");
   }
 
   await authService.resetPassword(user.id, parsedPassword);

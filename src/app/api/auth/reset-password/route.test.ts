@@ -175,7 +175,7 @@ describe("POST /api/auth/reset-password", () => {
   // Invalid / expired token
   // ---------------------------------------------------------------------------
 
-  it("throws HttpError 400 when token is invalid or expired", async () => {
+  it("throws HttpError 404 when token is invalid or expired", async () => {
     const token = "invalid-token";
 
     mockPasswordParse.mockReturnValueOnce("NewPassword1");
@@ -190,7 +190,7 @@ describe("POST /api/auth/reset-password", () => {
     });
 
     await expect(POST(req)).rejects.toMatchObject({
-      statusCode: 400,
+      statusCode: 404,
       code: "TOKEN_INVALID",
       message: "Invalid or expired reset token",
     });
