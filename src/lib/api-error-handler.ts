@@ -5,8 +5,8 @@ import { logError, logWarn } from "./logger";
 
 const DEFAULT_ERROR = {
   status: 500,
-  message: "Internal Server Error",
-  code: "INTERNAL_SERVER_ERROR",
+  message: "Something went wrong. Please try again later.",
+  code: "UNEXPECTED_ERROR",
 };
 
 export function handleApiError(error: unknown) {

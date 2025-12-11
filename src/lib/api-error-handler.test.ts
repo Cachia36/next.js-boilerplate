@@ -121,8 +121,8 @@ describe("handleApiError", () => {
     expect(passedError).toBe(httpError);
     expect(defaultError).toMatchObject({
       status: 500,
-      message: "Internal Server Error",
-      code: "INTERNAL_SERVER_ERROR",
+      message: "Something went wrong. Please try again later.",
+      code: "UNEXPECTED_ERROR",
     });
 
     expect(mockJson).toHaveBeenCalledWith(apiError, { status: 404 });
@@ -137,8 +137,8 @@ describe("handleApiError", () => {
     const error = new Error("Boom");
     const apiError = {
       status: 500,
-      message: "Internal Server Error",
-      code: "INTERNAL_SERVER_ERROR",
+      message: "Something went wrong. Please try again later.",
+      code: "UNEXPECTED_ERROR",
     };
 
     mockToApiError.mockReturnValueOnce(apiError);
@@ -155,8 +155,8 @@ describe("handleApiError", () => {
     expect(passedError).toBe(error);
     expect(defaultError).toMatchObject({
       status: 500,
-      message: "Internal Server Error",
-      code: "INTERNAL_SERVER_ERROR",
+      message: "Something went wrong. Please try again later.",
+      code: "UNEXPECTED_ERROR",
     });
 
     expect(mockJson).toHaveBeenCalledWith(apiError, { status: 500 });
@@ -170,8 +170,8 @@ describe("handleApiError", () => {
   it("handles non-Error unknown values as unhandled error with generic message", () => {
     const apiError = {
       status: 500,
-      message: "Internal Server Error",
-      code: "INTERNAL_SERVER_ERROR",
+      message: "Something went wrong. Please try again later.",
+      code: "UNEXPECTED_ERROR",
     };
 
     mockToApiError.mockReturnValueOnce(apiError);
