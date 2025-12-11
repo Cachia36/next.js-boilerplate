@@ -4,13 +4,21 @@ import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/hooks/useTheme";
-import { getCurrentUser, logoutRequest } from "@/lib/auth/authClient";
+import { logoutRequest } from "@/lib/auth/authClient"; // getCurrentUser removed
 import { ThemeToggle } from "../ThemeToggle";
 import { NAV_LINKS } from "./NavLinks";
 import { MobileMenu } from "./MobileMenu";
 import { DesktopNavbar } from "./DesktopNavbar";
 
-export default function Navbar() {
+type NavbarProps = {
+  isLoggedIn: boolean;
+  isAdmin: boolean;
+};
+
+export default function Navbar({
+  isLoggedIn: initialIsLoggedIn,
+  isAdmin: initialIsAdmin,
+}: NavbarProps) {
   const { toggleTheme, effectiveTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -21,46 +29,18 @@ export default function Navbar() {
   const isDark = mounted ? effectiveTheme === "dark" : false;
 
   const [isOpen, setIsOpen] = useState(false);
-  const [authLoading, setAuthLoading] = useState(true);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
+
+  // Local auth state, initialised from server props so UI updates immediately on logout
+  const [isLoggedIn, setIsLoggedIn] = useState(initialIsLoggedIn);
+  const [isAdmin, setIsAdmin] = useState(initialIsAdmin);
+
+  // We no longer "load" auth on the client – server already did it
+  const authLoading = false;
 
   const router = useRouter();
   const pathname = usePathname();
 
   const closeMenu = () => setIsOpen(false);
-
-  // Check auth + role on mount & route change
-  useEffect(() => {
-    let cancelled = false;
-
-    async function checkAuth() {
-      try {
-        const data = await getCurrentUser();
-
-        if (!cancelled) {
-          const user = data.user;
-          setIsLoggedIn(!!user);
-          setIsAdmin(user?.role === "admin");
-        }
-      } catch {
-        if (!cancelled) {
-          setIsLoggedIn(false);
-          setIsAdmin(false);
-        }
-      } finally {
-        if (!cancelled) {
-          setAuthLoading(false);
-        }
-      }
-    }
-
-    checkAuth();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [pathname]);
 
   // Lock body scroll when menu is open
   useEffect(() => {
@@ -83,6 +63,7 @@ export default function Navbar() {
     } catch {
       // ignore errors – we still treat user as logged out
     } finally {
+      // Optimistically update local UI; next request will get fresh server auth state
       setIsLoggedIn(false);
       setIsAdmin(false);
       router.push("/login");
