@@ -8,6 +8,8 @@ import { cookies } from "next/headers";
 import type { ReactNode } from "react";
 import { authService } from "@/lib/auth/domain/authService";
 
+export const dynamic = "force-dynamic";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],

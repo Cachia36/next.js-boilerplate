@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { cn } from "@/lib/core/utils";
 import { useTheme } from "@/hooks/useTheme";
-import { logoutRequest } from "@/lib/auth/client/authClient"; // getCurrentUser removed
+import { logoutRequest } from "@/lib/auth/client/authClient";
 import { ThemeToggle } from "../../ui/ThemeToggle";
 import { NAV_LINKS } from "./NavLinks";
 import { MobileMenu } from "./MobileMenu";
@@ -21,24 +21,22 @@ export default function Navbar({
 }: NavbarProps) {
   const { toggleTheme, effectiveTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const isLoggedIn = initialIsLoggedIn;
+  const isAdmin = initialIsAdmin;
+
+  const authLoading = false;
+
+  const pathname = usePathname();
 
   useEffect(() => {
+    // We intentionally set a mounted flag to avoid theme hydration mismatches
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
 
   const isDark = mounted ? effectiveTheme === "dark" : false;
-
-  const [isOpen, setIsOpen] = useState(false);
-
-  // Local auth state, initialised from server props so UI updates immediately on logout
-  const [isLoggedIn, setIsLoggedIn] = useState(initialIsLoggedIn);
-  const [isAdmin, setIsAdmin] = useState(initialIsAdmin);
-
-  // We no longer "load" auth on the client – server already did it
-  const authLoading = false;
-
-  const router = useRouter();
-  const pathname = usePathname();
 
   const closeMenu = () => setIsOpen(false);
 
@@ -62,12 +60,10 @@ export default function Navbar({
       await logoutRequest();
     } catch {
       // ignore errors – we still treat user as logged out
-    } finally {
-      // Optimistically update local UI; next request will get fresh server auth state
-      setIsLoggedIn(false);
-      setIsAdmin(false);
-      router.push("/login");
     }
+
+    // Hard navigation to avoid stale UI after logout
+    window.location.href = "/login";
   };
 
   return (

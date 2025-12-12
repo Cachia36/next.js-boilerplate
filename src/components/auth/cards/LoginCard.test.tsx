@@ -1,13 +1,12 @@
-import React from "react";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { LoginCard } from "./LoginCard";
 
-// Mock next/navigation router
-const pushMock = vi.fn();
+// Mock next/navigation router (LoginCard still calls useRouter, even if it doesn't use push)
 vi.mock("next/navigation", () => ({
   useRouter: () => ({
-    push: pushMock,
+    push: vi.fn(),
+    refresh: vi.fn(),
   }),
 }));
 
@@ -26,7 +25,8 @@ vi.mock("@/lib/auth/client/authClient", () => ({
 describe("LoginCard", () => {
   beforeEach(() => {
     loginRequestMock.mockReset();
-    pushMock.mockReset();
+    // Reset location between tests
+    window.location.href = "http://localhost/";
   });
 
   afterEach(() => {
@@ -45,7 +45,6 @@ describe("LoginCard", () => {
     expect(await screen.findByText("Password must be at least 8 characters")).toBeTruthy();
 
     expect(loginRequestMock).not.toHaveBeenCalled();
-    expect(pushMock).not.toHaveBeenCalled();
   });
 
   it("calls loginRequest and redirects on successful login", async () => {
@@ -54,6 +53,9 @@ describe("LoginCard", () => {
       accessToken: "token",
       refreshToken: "refresh",
     });
+
+    // Start from /login so we can see the redirect effect clearly
+    window.location.href = "http://localhost/login";
 
     render(<LoginCard />);
 
@@ -68,7 +70,11 @@ describe("LoginCard", () => {
 
     await waitFor(() => {
       expect(loginRequestMock).toHaveBeenCalledWith("test@example.com", "Password1");
-      expect(pushMock).toHaveBeenCalledWith("/");
+    });
+
+    await waitFor(() => {
+      // LoginCard does: window.location.href = "/"
+      expect(window.location.pathname).toBe("/");
     });
   });
 

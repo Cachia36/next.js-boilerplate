@@ -1,6 +1,6 @@
 "use client";
 
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import { ShieldCheck, Loader2 } from "lucide-react";
@@ -20,7 +20,6 @@ type ApiError = Error & { statusCode?: number };
 
 export function ResetPasswordCard() {
   const searchParams = useSearchParams();
-  const router = useRouter();
 
   const token = searchParams.get("token");
 
@@ -68,7 +67,8 @@ export function ResetPasswordCard() {
 
       // Auto-redirect after short delay
       setTimeout(() => {
-        router.push("/login");
+        // Earlier I was using router.push, but for some reason buttons were not showing properly (e.g logged in users seeing sign in button instead of sign out)
+        window.location.href = "/login";
       }, 1800);
     } catch (err: unknown) {
       const error = err as ApiError;

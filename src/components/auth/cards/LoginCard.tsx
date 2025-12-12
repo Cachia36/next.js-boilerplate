@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { LogIn, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
@@ -20,8 +19,6 @@ type FieldErrors = {
 type ApiError = Error & { statusCode?: number };
 
 export function LoginCard() {
-  const router = useRouter();
-
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [formMessage, setFormMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -51,7 +48,8 @@ export function LoginCard() {
       clearFormMessage();
 
       await loginRequest(email, password);
-      router.push("/");
+
+      window.location.href = "/";
     } catch (err: unknown) {
       const error = err as ApiError;
 

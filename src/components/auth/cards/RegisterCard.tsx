@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { UserPlus2, Loader2 } from "lucide-react";
 
@@ -26,8 +25,6 @@ type FieldErrors = {
 type ApiError = Error & { statusCode?: number };
 
 export function RegisterCard() {
-  const router = useRouter();
-
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [formMessage, setFormMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -61,7 +58,8 @@ export function RegisterCard() {
       clearFormMessage();
 
       await registerRequest(email, password);
-      router.push("/login");
+      // Earlier I was using router.push, but for some reason buttons were not showing properly (e.g logged in users seeing sign in button instead of sign out)
+      window.location.href = "/login";
     } catch (err: unknown) {
       const error = err as ApiError;
       if (error.statusCode === 429) {
