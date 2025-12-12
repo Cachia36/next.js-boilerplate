@@ -40,6 +40,8 @@ export function RegisterCard() {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    // 🚫 Prevent multiple rapid submits
     if (isSubmitting) return;
 
     const errors: FieldErrors = {
@@ -53,21 +55,25 @@ export function RegisterCard() {
       return;
     }
 
-    try {
-      setIsSubmitting(true);
-      clearFormMessage();
+    // ✅ Start submit
+    setIsSubmitting(true);
+    clearFormMessage();
 
+    try {
       await registerRequest(email, password);
-      // Earlier I was using router.push, but for some reason buttons were not showing properly (e.g logged in users seeing sign in button instead of sign out)
+
+      // On success, keep the button disabled while redirecting
       window.location.href = "/login";
     } catch (err: unknown) {
       const error = err as ApiError;
+
       if (error.statusCode === 429) {
         setFormMessage("Too many attempts. Please wait and try again.");
       } else {
         setFormMessage(error.message ?? "Failed to create account");
       }
-    } finally {
+
+      // allow retry after error
       setIsSubmitting(false);
     }
   };
@@ -103,12 +109,14 @@ export function RegisterCard() {
           error={fieldErrors.email}
           onChange={(value) => {
             setEmail(value);
+
             if (fieldErrors.email) {
               setFieldErrors((prev) => ({
                 ...prev,
                 email: validateEmail(value),
               }));
             }
+
             if (formMessage) clearFormMessage();
           }}
           onBlur={(value) => {

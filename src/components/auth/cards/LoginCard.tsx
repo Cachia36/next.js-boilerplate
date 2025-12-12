@@ -30,14 +30,14 @@ export function LoginCard() {
   const clearFormMessage = () => setFormMessage(null);
 
   const validatePasswordForLogin = (value: string): string | undefined => {
-    if (value.trim() === "") {
-      return "Password is required";
-    }
+    if (value.trim() === "") return "Password is required";
     return undefined;
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    // Prevent multiple rapid submits
     if (isSubmitting) return;
 
     const emailErr = validateEmail(email);
@@ -45,17 +45,19 @@ export function LoginCard() {
 
     const nextErrors: FieldErrors = { email: emailErr, password: passwordErr };
 
+    // client-side validation errors
     if (Object.values(nextErrors).some(Boolean)) {
       setFieldErrors(nextErrors);
       return;
     }
+    setIsSubmitting(true);
+    clearFormMessage();
 
     try {
-      setIsSubmitting(true);
-      clearFormMessage();
-
       await loginRequest(email, password);
 
+      // On success -> DO NOT re-enable button
+      // Keep it disabled until redirect completes
       window.location.href = "/";
     } catch (err: unknown) {
       const error = err as ApiError;
@@ -65,7 +67,8 @@ export function LoginCard() {
       } else {
         setFormMessage(error.message ?? "Failed to sign in");
       }
-    } finally {
+
+      // Allow retry only on error
       setIsSubmitting(false);
     }
   };
@@ -123,12 +126,14 @@ export function LoginCard() {
           show={showPassword}
           onChange={(value) => {
             setPassword(value);
+
             if (fieldErrors.password) {
               setFieldErrors((prev) => ({
                 ...prev,
                 password: validatePasswordForLogin(value),
               }));
             }
+
             if (formMessage) clearFormMessage();
           }}
           onBlur={(value) => {

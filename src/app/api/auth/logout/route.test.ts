@@ -97,6 +97,5 @@ describe("POST /api/auth/logout", () => {
       secure: true,
       sameSite: "lax",
     });
-
   });
 });
